@@ -61,7 +61,7 @@ npx vercel        # or: npx netlify deploy   # or: GitHub Pages
 - **Name:** Shakeel Ahmad — Licensed Real Estate Salesperson
 - **Brokerage:** Platinum Properties  ·  **License:** DRE# 49NE1128162
 - **Cell / text:** (718) 696-9245  ·  **Office:** (585) 458-4250
-- **Email:** shakeelahmad1520@hotmail.com
+- **Email:** info@shakeelahmadrealtor.com
 - **Office:** 2270 Latta Road, Greece, NY 14612
 - **Hours:** Mon–Sat, 8:00 AM – 8:00 PM
 - **Markets:** Greece, Rochester, Monroe County, Webster, Penfield, Pittsford, Finger Lakes,

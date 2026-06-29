@@ -108,8 +108,8 @@ const SITE = {
   cellHref: 'tel:+17186969245',
   office: '(585) 458-4250',
   officeHref: 'tel:+15854584250',
-  email: 'shakeelahmad1520@hotmail.com',
-  emailHref: 'mailto:shakeelahmad1520@hotmail.com',
+  email: 'info@shakeelahmadrealtor.com',
+  emailHref: 'mailto:info@shakeelahmadrealtor.com',
 
   address: {
     street: '2270 Latta Road',

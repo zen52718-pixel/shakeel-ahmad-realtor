@@ -131,7 +131,7 @@ show a success state, and `console.log` the payload.
 | License    | DRE# 49NE1128162 |
 | Cell/text  | (718) 696-9245 |
 | Office     | (585) 458-4250 |
-| Email      | shakeelahmad1520@hotmail.com |
+| Email      | info@shakeelahmadrealtor.com |
 | Address    | 2270 Latta Road, Greece, NY 14612 |
 | Hours      | Mon–Sat, 8:00 AM – 8:00 PM |
 | Specialty  | Probate & time-sensitive / estate sales |
