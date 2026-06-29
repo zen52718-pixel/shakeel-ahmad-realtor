@@ -1,140 +1,125 @@
-# Shakeel Ahmad Realtor — Website
+# Shakeel Ahmad Realtor — Website (2.0)
 
-A production-ready, multi-page real estate marketing website for **Shakeel Ahmad**,
-Licensed Real Estate Salesperson with **Platinum Properties** (Greece, NY).
+A light, modern, conversion-focused real estate personal-brand website for
+**Shakeel Ahmad**, Licensed New York Real Estate Salesperson with **Platinum Properties**.
 
-Built as a **static site** — plain HTML5, CSS, and vanilla JavaScript. **No frameworks,
-no build step, no dependencies** beyond Google Fonts. It loads fast, hosts anywhere, and
-is easy to maintain.
+Static site — plain **HTML5 + CSS + vanilla JavaScript**. **No frameworks, no build step,
+no dependencies** beyond Google Fonts. Fast, hostable anywhere, easy to maintain.
 
 ---
 
 ## Quick start (preview locally)
 
-From this folder, start any static server:
-
 ```bash
-# Python (built in on most systems)
-python3 -m http.server 8000
-# then open http://localhost:8000
-
-# …or Node
+python3 -m http.server 8000     # → http://localhost:8000
+# or
 npx serve .
 ```
 
-> Open the site through a local server (not by double-clicking the files), so the
-> JavaScript can read `?id=` query params on the property page.
+> Use a local server (not `file://`) so the property page can read `?id=` params.
 
 ---
 
-## File structure
+## Pages (3 main + 1 detail template)
 
 ```
 /
-├── index.html          # Home
-├── properties.html     # All listings + live filters
-├── property.html       # Single listing detail (reads ?id=slug)
-├── about.html          # About + honest Portfolio (Recent Transactions)
-├── contact.html        # Contact info + validated consultation form
-├── robots.txt          # Crawler rules
-├── sitemap.xml         # Sitemap (keep in sync with the page list)
-├── README.md           # This file
+├── index.html            # Home + Portfolio + Media + Contact (short lead form)
+├── properties.html       # Listings: search, filters, grid
+├── property.html         # Single listing detail (reads ?id=slug) — linked from cards
+├── buyers-sellers.html   # Lead-gen: buyer & seller paths + detailed forms
+├── robots.txt  sitemap.xml  README.md
 └── assets/
-    ├── css/
-    │   └── styles.css  # Full design system (one shared stylesheet)
+    ├── img/shakeel-ahmad.jpg
+    ├── css/styles.css     # Full light design system (one file)
     └── js/
-        ├── data.js     # SITE + PROPERTIES + TRANSACTIONS  (SINGLE SOURCE OF TRUTH)
-        ├── main.js     # Nav, mobile menu, reveals, cards, grid + filters, forms
-        └── property.js # Renders property.html from ?id=
+        ├── data.js        # SITE + STATS + PROPERTIES + TRANSACTIONS + MEDIA (SINGLE SOURCE OF TRUTH)
+        ├── main.js        # Nav, reveals, counters, renderers, filters, forms
+        └── property.js    # Renders property.html from ?id=
 ```
 
----
-
-## The "add one object" rule (data-driven)
-
-All listings live in `assets/js/data.js`. **Adding one object to the `PROPERTIES`
-array automatically:**
-
-- renders its card on the Properties grid (and Home, if `featured: true`),
-- includes it in every filter (city / type / price / status),
-- generates its detail page at `property.html?id=<slug>`,
-- and lists it under **Related Properties** on other listings.
-
-…with **zero other edits**. Keep this guarantee intact.
-
-### Property object shape
-
-```js
-{
-  id: 'unique-slug',          // → property.html?id=unique-slug
-  title: 'Lakefront Colonial',
-  status: 'For Sale',         // 'For Sale' | 'Pending' | 'Sold'
-  price: 539000,              // number (USD)
-  address: '184 Edgemere Drive',
-  city: 'Greece', state: 'NY', zip: '14612',
-  type: 'Single-Family',      // Single-Family | Condo | Townhouse | Multi-Family | Land
-  beds: 4, baths: 3, sqft: 2840, yearBuilt: 2006,
-  lot: '0.42 acre',           // optional
-  featured: true,             // show on Home
-  sample: true,               // shows "sample — replace with MLS" tag
-  short: 'One-line card description.',
-  description: 'Full paragraph for the detail page.',
-  features: ['Feature A', 'Feature B'],
-  image: '…',                 // card image (see Images below)
-  images: ['…', '…'],         // gallery images
-}
-```
+Navigation: **Home · Properties · Buyers & Sellers · Contact** (Contact = button to the
+homepage `#contact` form). Sticky header; sticky mobile Call + Consultation bar.
 
 ---
 
-## Images
+## Data-driven "add one object" rule
 
-Placeholder images are generated as **inline SVG gradient data-URIs** by
-`svgPlaceholder()` in `data.js`, so the markup always uses real
-`<img loading="lazy">` tags.
+All listings live in `assets/js/data.js`. **Adding one object to `PROPERTIES`** automatically
+renders its card (grid + Home featured if `featured: true`), includes it in every filter,
+generates its detail page at `property.html?id=<slug>`, and lists it under **Related
+Properties** — with zero other edits.
 
-**To use real photos:** set each property's `image` (card) and `images[]` (gallery)
-to photo URLs (or local paths like `assets/img/...`). Nothing else needs to change.
-
-The About page headshot has a clearly commented swap spot in `about.html` (search
-for `SWAP SPOT`). Replace the inline placeholder `<img>` with the real headshot.
+Portfolio entries (`TRANSACTIONS`), media tiles (`MEDIA`) and stats (`STATS`) are rendered
+the same way. To plug in a CMS/MLS feed later, replace these arrays with an API response of
+the **same shape** — no view code changes.
 
 ---
 
-## Forms
+## Design system
 
-Both forms (Contact consultation + property "Schedule a Showing") validate client-side,
-show a success state, and `console.log` the payload.
+**Palette (HEX):**
 
-**To connect a real endpoint** (e.g. Formspree), search the codebase for
-`Connect a real endpoint` in `assets/js/main.js` and follow the commented example.
+| Token | Value | Use |
+|---|---|---|
+| White | `#FFFFFF` | base background |
+| Off-white | `#FAFBFC` | subtle surfaces |
+| Light gray | `#F5F7FA` / `#EEF2F7` | section backgrounds |
+| Charcoal | `#16202E` | body text |
+| Ink | `#0B1422` | headings |
+| Navy (primary) | `#102A4E` | primary buttons, brand, dark bands |
+| Blue (accent) | `#2D5BA8` | links, secondary actions, icons |
+| Gold (luxury accent) | `#C2A053` (light `#E4CC8C`, dark `#9B7C34`) | accents, top CTA per section |
+
+Navy + blue do the heavy lifting; **gold is a restrained luxury accent** (eyebrow ticks,
+hairlines, the single most important CTA per section).
+
+**Typography (Google Fonts):** **Space Grotesk** (display/headlines) + **Manrope** (body/UI).
+
+**Components:** glass hero card with a custom **animated isometric architecture SVG**,
+floating trust badges, rounded cards (16–28px), soft shadows, **animated counters**,
+fade-in-on-scroll, hover lift, sticky glass header, sticky mobile CTA bar. All motion
+respects `prefers-reduced-motion`.
+
+---
+
+## Forms (lead capture)
+
+- **Home:** short consultation lead form (`#contact`).
+- **Buyers & Sellers:** Buyer Consultation, Seller Consultation + Home Valuation, and an
+  Appointment Request — each capturing name, phone, email, preferred contact method,
+  message, buying/selling, budget, timeline and city.
+- **Property detail:** Schedule a Showing.
+
+All forms validate client-side, show a success state, and `console.log` the payload.
+**To deliver leads, connect a real endpoint** (Formspree etc.) — search
+`Connect a real endpoint` in `assets/js/main.js`.
 
 ---
 
 ## SEO
 
-- Unique `<title>`, meta description, canonical, Open Graph + Twitter tags per page.
-- `RealEstateAgent` JSON-LD on the Home page with real NAP, `areaServed`,
+- Unique title/description/canonical + Open Graph + Twitter tags per page.
+- `RealEstateAgent` (Local Business) JSON-LD on the Home page with real NAP, `areaServed`,
   `openingHours`, and a `sameAs` array of all social/review profiles.
-- `robots.txt` + `sitemap.xml` (keep the sitemap in sync with the page list).
-- Open Graph / Twitter share images currently point to the headshot
-  (`assets/img/shakeel-ahmad.jpg`). Optionally swap in a dedicated 1200×630 image later.
+- Semantic HTML, one `<h1>` per page, skip link, visible focus, lazy images.
+- `robots.txt` + `sitemap.xml` (kept in sync with the page list).
 
 ---
 
-## Brand / agent data (do not invent — single source in `data.js`)
+## Brand / agent data (single source in `data.js` — do not invent)
 
-| Field      | Value |
-|------------|-------|
-| Name       | Shakeel Ahmad — Licensed Real Estate Salesperson |
-| Brokerage  | Platinum Properties |
-| License    | NYS License #10401314142 |
-| Cell/text  | (718) 696-9245 |
-| Office     | (585) 458-4250 |
-| Email      | info@shakeelahmadrealtor.com |
-| Address    | 2270 Latta Road, Greece, NY 14612 |
-| Hours      | Mon–Sat, 8:00 AM – 8:00 PM |
-| Specialty  | Probate & time-sensitive / estate sales |
+| Field | Value |
+|---|---|
+| Name | Shakeel Ahmad — Licensed Real Estate Salesperson |
+| Brokerage | Platinum Properties |
+| License | NYS License #10401314142 |
+| Cell/text | (718) 696-9245 |
+| Office | (585) 458-4250 |
+| Email | info@shakeelahmadrealtor.com |
+| Address | 2270 Latta Road, Greece, NY 14612 |
+| Hours | Mon–Sat, 8:00 AM – 8:00 PM |
+| Specialty | Probate & time-sensitive / estate sales |
 
 Footer shows the brokerage name and **Equal Housing Opportunity** (NY advertising rule).
 
@@ -142,34 +127,14 @@ Footer shows the brokerage name and **Equal Housing Opportunity** (NY advertisin
 
 ## Before launch — checklist
 
-- [ ] Replace sample listings in `data.js` with live/MLS data.
-- [ ] Add real listing photos (the professional headshot is already in `assets/img/shakeel-ahmad.jpg`).
-- [ ] (Optional) Add a dedicated 1200×630 social share image; OG/Twitter tags currently
-      use the headshot, which social platforms will center-crop.
-- [ ] Connect the form endpoint (Formspree or similar).
-- [ ] Confirm the public email and resolve the full Google Business Profile URL.
-- [ ] Verify the domain in canonical / Open Graph / sitemap URLs
-      (`https://www.shakeelahmadrealtor.com/`).
-
----
-
-## Future-proofing (add later without refactoring)
-
-- **CMS / MLS feed** — replace the `PROPERTIES` array with an API response of the same shape.
-- **Google Maps** — replace the styled `.map-ph` placeholders with map embeds.
-- **Saved properties** — the heart/save action can hook into the existing card render.
-- **Booking, mortgage calculator, blog / market reports, CRM/email/SMS** — drop into the
-  existing sections and form endpoints.
-
----
-
-## Tech & conventions
-
-- Plain HTML5 + CSS + vanilla JS. Design tokens live in `:root` CSS variables.
-- Mobile-first, fully responsive (desktop / laptop / tablet / mobile); no horizontal scroll.
-- Accessible: semantic HTML, one `<h1>` per page, skip link, alt text, visible
-  `:focus-visible`, large touch targets, and `prefers-reduced-motion` support.
-- Typography: **Fraunces** (display), **Manrope** (body), **Space Mono** (labels/meta).
+- [ ] Replace sample listings in `data.js` with live/MLS data and real photos.
+- [ ] Swap media-gallery placeholders for real photos and video thumbnails.
+- [ ] Connect the form endpoint (Formspree/Netlify) → `info@shakeelahmadrealtor.com`.
+- [ ] Confirm `info@shakeelahmadrealtor.com` mailbox/forwarding is live.
+- [ ] Resolve the full Google Business Profile URL (replace the `share.google` short link).
+- [ ] (Optional) Dedicated 1200×630 social share image (OG currently uses the headshot).
+- [ ] Confirm brokerage display name vs. license ("Platinum Properties and Asset Management of Rochester").
+- [ ] Point `www.shakeelahmadrealtor.com` DNS at the host; submit sitemap to Search Console.
 
 ---
 

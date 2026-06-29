@@ -1,46 +1,36 @@
 /* ============================================================================
    data.js — SINGLE SOURCE OF TRUTH
    ----------------------------------------------------------------------------
-   Everything that renders on the site reads from the objects in this file:
-     • SITE          → brand / agent NAP, hours, markets, social profiles, SEO
-     • PROPERTIES    → every listing (cards, filters, detail page, related)
-     • TRANSACTIONS  → honest "Recent Transactions" on the About page
+   Everything the site renders reads from the objects here:
+     • SITE          → brand / agent NAP, hours, markets, socials, SEO
+     • PROPERTIES    → listings (cards, filters, detail page, related)
+     • TRANSACTIONS  → honest Portfolio entries (story + service, no numbers)
+     • MEDIA         → professional media gallery tiles (placeholders)
+     • STATS         → factual animated counters (no invented figures)
 
    GOLDEN RULE
    -----------
-   Adding ONE object to PROPERTIES automatically renders:
-     • its card on the home (if featured) + properties grid
-     • it inside every relevant filter (city / type / price / status)
-     • its detail page at  property.html?id=<slug>
-     • it inside the "Related Properties" section
-   …with zero other edits.
+   Adding ONE object to PROPERTIES automatically renders its card, filters,
+   detail page (property.html?id=<slug>) and "related" section — zero edits.
 
    IMAGES
    ------
-   Placeholder images are generated as inline SVG gradient data-URIs by
-   svgPlaceholder() below, so the markup always uses real <img loading="lazy">
-   tags. To switch to real photos, just set a property's `image` (card) and
-   `images[]` (gallery) to photo URLs — nothing else changes.
+   Placeholders are generated as inline SVG gradient data-URIs by
+   svgPlaceholder(), so markup always uses real <img loading="lazy"> tags.
+   Swap any `image` / `images[]` value for a real photo URL — nothing else changes.
 
    FUTURE-PROOFING
    ---------------
-   To plug in a CMS / MLS feed later, replace the PROPERTIES / TRANSACTIONS
-   arrays with an API response of the SAME SHAPE. No view code needs to change.
+   Replace these arrays with a CMS/MLS API response of the SAME SHAPE; no view
+   code changes required.
    ========================================================================== */
 
 
 /* ----------------------------------------------------------------------------
-   svgPlaceholder() — generate a premium gradient placeholder as a data-URI.
-   Returns a string usable directly in <img src="...">.
-   @param {Object} opts
-     - w, h      dimensions of the SVG canvas
-     - from, to  gradient stop colors
-     - label     small caption shown on the image (e.g. city or "Gallery 2")
-     - tag       optional eyebrow text (e.g. "SAMPLE")
+   svgPlaceholder() — premium gradient placeholder as a data-URI.
+   Soft, light-friendly architectural motif so empty states feel intentional.
 ---------------------------------------------------------------------------- */
-function svgPlaceholder({ w = 1200, h = 800, from = '#0E2440', to = '#163A6B', label = '', tag = '' } = {}) {
-  // A subtle architectural line motif keeps placeholders feeling intentional,
-  // not empty. Gold hairlines echo the brand's editorial signature.
+function svgPlaceholder({ w = 1200, h = 800, from = '#102A4E', to = '#2D5BA8', label = '', tag = '' } = {}) {
   const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img">
   <defs>
@@ -49,51 +39,43 @@ function svgPlaceholder({ w = 1200, h = 800, from = '#0E2440', to = '#163A6B', l
       <stop offset="1" stop-color="${to}"/>
     </linearGradient>
     <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff" stop-opacity="0.06"/>
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.10"/>
       <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
     </linearGradient>
   </defs>
   <rect width="${w}" height="${h}" fill="url(#g)"/>
   <rect width="${w}" height="${h}" fill="url(#sheen)"/>
-  <g fill="none" stroke="#B8924E" stroke-opacity="0.28" stroke-width="2">
-    <path d="M ${w * 0.12} ${h * 0.7} L ${w * 0.5} ${h * 0.34} L ${w * 0.88} ${h * 0.7}"/>
-    <rect x="${w * 0.32}" y="${h * 0.5}" width="${w * 0.36}" height="${h * 0.24}"/>
+  <g fill="none" stroke="#E4CC8C" stroke-opacity="0.42" stroke-width="2">
+    <path d="M ${w * 0.14} ${h * 0.72} L ${w * 0.5} ${h * 0.32} L ${w * 0.86} ${h * 0.72}"/>
+    <rect x="${w * 0.33}" y="${h * 0.5} " width="${w * 0.34}" height="${h * 0.24}"/>
     <line x1="${w * 0.5}" y1="${h * 0.5}" x2="${w * 0.5}" y2="${h * 0.74}"/>
   </g>
-  ${tag ? `<text x="${w * 0.5}" y="${h * 0.46}" fill="#D8BC86" font-family="monospace" font-size="${Math.round(w * 0.022)}" letter-spacing="6" text-anchor="middle">${tag}</text>` : ''}
-  ${label ? `<text x="${w * 0.5}" y="${h * 0.86}" fill="#FBF9F5" font-family="Georgia, serif" font-size="${Math.round(w * 0.04)}" text-anchor="middle">${label}</text>` : ''}
+  ${tag ? `<text x="${w * 0.5}" y="${h * 0.44}" fill="#E4CC8C" font-family="monospace" font-size="${Math.round(w * 0.022)}" letter-spacing="6" text-anchor="middle">${tag}</text>` : ''}
+  ${label ? `<text x="${w * 0.5}" y="${h * 0.88}" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-size="${Math.round(w * 0.038)}" text-anchor="middle">${label}</text>` : ''}
 </svg>`.trim();
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
-/* Brand gradient pairs — rotated across listings for visual variety while
-   staying strictly on-palette (ink → navy → navy-700 with gold accents). */
+/* On-palette gradient pairs rotated across listings/media for variety. */
 const GRADIENTS = [
-  { from: '#0B1B2B', to: '#163A6B' },
-  { from: '#0E2440', to: '#1F4E86' },
-  { from: '#11243A', to: '#2A2118' }, // navy → warm shadow
-  { from: '#0B1B2B', to: '#3A2F1C' }, // ink → gold-dark shadow
-  { from: '#13314F', to: '#0E2440' },
-  { from: '#1A1E26', to: '#163A6B' },
+  { from: '#102A4E', to: '#2D5BA8' },
+  { from: '#0B1E3A', to: '#3567B6' },
+  { from: '#14203A', to: '#27406E' },
+  { from: '#1B2C4A', to: '#9B7C34' }, // navy → gold shadow
+  { from: '#102A4E', to: '#5A78A8' },
+  { from: '#0E2240', to: '#2D5BA8' },
 ];
 
-/* Build a small gallery of placeholders for a listing. Real photo URLs can
-   replace the returned array verbatim. */
 function galleryFor(city, idx, count = 4) {
   const g = GRADIENTS[idx % GRADIENTS.length];
   return Array.from({ length: count }, (_, i) =>
-    svgPlaceholder({
-      from: g.from,
-      to: g.to,
-      label: city,
-      tag: i === 0 ? 'SAMPLE' : `VIEW ${i + 1}`,
-    })
+    svgPlaceholder({ from: g.from, to: g.to, label: city, tag: i === 0 ? 'SAMPLE' : `VIEW ${i + 1}` })
   );
 }
 
 
 /* ============================================================================
-   SITE — brand, NAP, hours, markets, social profiles, SEO defaults
+   SITE — brand, NAP, hours, markets, socials, SEO defaults
    (Real agent data — do NOT invent or alter phone / email / license.)
    ========================================================================== */
 const SITE = {
@@ -103,7 +85,6 @@ const SITE = {
   brokerage: 'Platinum Properties',
   license: 'NYS License #10401314142',
 
-  // Contact (NAP)
   cell: '(718) 696-9245',
   cellHref: 'tel:+17186969245',
   office: '(585) 458-4250',
@@ -120,20 +101,18 @@ const SITE = {
   },
 
   hours: 'Mon–Sat, 8:00 AM – 8:00 PM',
-  hoursSchema: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'], // for JSON-LD openingHours
-
   specialty: 'Probate & time-sensitive / estate sales',
 
-  // Markets served — also feed schema areaServed
+  // Headline markets (hero + areas served)
+  marketsPrimary: ['NYC', 'Rochester', 'Upstate NY'],
   markets: [
     'Greece', 'Rochester', 'Monroe County', 'Webster', 'Penfield',
     'Pittsford', 'Finger Lakes', 'Upstate NY', 'NYC Relocation',
   ],
 
-  // Canonical site origin (used by JS to build absolute URLs if needed)
   origin: 'https://www.shakeelahmadrealtor.com',
+  headshot: 'assets/img/shakeel-ahmad.jpg',
 
-  // Social + review profiles — footer icons, contact page, schema sameAs
   social: {
     facebook: 'https://www.facebook.com/ShakeelAhmadRealtor/',
     linkedin: 'https://www.linkedin.com/in/shakeel-ahmad-055b8881/',
@@ -141,8 +120,6 @@ const SITE = {
     zillow: 'https://www.zillow.com/profile/Shakeel%20Ahmad',
     google: 'https://share.google/ZrAXRv1uQOXXVJiJa',
   },
-
-  // Trust CTAs (link out only — never fabricate counts or quotes)
   reviews: {
     zillow: 'https://www.zillow.com/profile/Shakeel%20Ahmad',
     google: 'https://share.google/ZrAXRv1uQOXXVJiJa',
@@ -153,25 +130,19 @@ const SITE = {
 
 
 /* ============================================================================
-   PROPERTIES — every listing (single source of truth)
-   ----------------------------------------------------------------------------
-   Field contract (keep shape stable for CMS/MLS swap):
-     id        unique slug → used in property.html?id=<slug>
-     title     short marketing name
-     status    'For Sale' | 'Pending' | 'Sold'
-     price     number (USD)
-     address   street line
-     city, state, zip
-     type      'Single-Family' | 'Condo' | 'Townhouse' | 'Multi-Family' | 'Land'
-     beds, baths, sqft, yearBuilt   numbers (use 0 / null where N/A, e.g. land)
-     lot       optional lot size string
-     featured  boolean → appears in Home "Featured Properties"
-     sample    boolean → shows "sample — replace with MLS" note
-     short     one-line description for cards
-     description  full paragraph(s) for detail page
-     features  string[] amenities/highlights
-     image     card image (string) — swap for real photo URL
-     images    gallery images (string[]) — swap for real photo URLs
+   STATS — factual animated counters (NO invented sales figures)
+   value is the count-up target; suffix/label describe it honestly.
+   ========================================================================== */
+const STATS = [
+  { value: 9, suffix: '', label: 'Areas Served Across NY' },
+  { value: 6, suffix: '', label: 'Days a Week, 8AM–8PM' },
+  { value: 5, suffix: '', label: 'Property Types Handled' },
+  { value: 100, suffix: '%', label: 'Client-First Representation' },
+];
+
+
+/* ============================================================================
+   PROPERTIES — listings (single source of truth, stable shape)
    ========================================================================== */
 const PROPERTIES = [
   {
@@ -180,29 +151,15 @@ const PROPERTIES = [
     status: 'For Sale',
     price: 539000,
     address: '184 Edgemere Drive',
-    city: 'Greece',
-    state: 'NY',
-    zip: '14612',
+    city: 'Greece', state: 'NY', zip: '14612',
     type: 'Single-Family',
-    beds: 4,
-    baths: 3,
-    sqft: 2840,
-    yearBuilt: 2006,
-    lot: '0.42 acre',
-    featured: true,
-    sample: true,
+    beds: 4, baths: 3, sqft: 2840, yearBuilt: 2006, lot: '0.42 acre',
+    featured: true, sample: true,
     short: 'Light-filled colonial with lake views, chef’s kitchen and finished walkout.',
     description:
       'A refined four-bedroom colonial moments from Lake Ontario, blending classic millwork with a modern open-concept main floor. The chef’s kitchen opens to a sun-filled great room, while the primary suite offers a spa bath and walk-in closet. A finished walkout lower level and three-season porch extend the living space outdoors.',
-    features: [
-      'Chef’s kitchen with quartz island',
-      'Primary suite with spa bath',
-      'Finished walkout lower level',
-      'Three-season porch',
-      'Hardwood floors throughout',
-      'Attached two-car garage',
-    ],
-    image: svgPlaceholder({ from: '#0B1B2B', to: '#163A6B', label: 'Greece, NY', tag: 'SAMPLE' }),
+    features: ['Chef’s kitchen with quartz island', 'Primary suite with spa bath', 'Finished walkout lower level', 'Three-season porch', 'Hardwood floors throughout', 'Attached two-car garage'],
+    image: svgPlaceholder({ from: '#102A4E', to: '#2D5BA8', label: 'Greece, NY', tag: 'SAMPLE' }),
     images: galleryFor('Greece, NY', 0, 5),
   },
   {
@@ -211,29 +168,15 @@ const PROPERTIES = [
     status: 'For Sale',
     price: 312000,
     address: '27 Berkeley Street, #3',
-    city: 'Rochester',
-    state: 'NY',
-    zip: '14607',
+    city: 'Rochester', state: 'NY', zip: '14607',
     type: 'Condo',
-    beds: 2,
-    baths: 2,
-    sqft: 1390,
-    yearBuilt: 1915,
-    lot: null,
-    featured: true,
-    sample: true,
+    beds: 2, baths: 2, sqft: 1390, yearBuilt: 1915, lot: null,
+    featured: true, sample: true,
     short: 'Restored condo in the heart of the Park Ave district — walkable and turnkey.',
     description:
       'A beautifully restored two-bedroom condominium in Rochester’s coveted Park Avenue neighborhood. Original character — tall windows, period trim — meets a renovated kitchen and baths. Steps from cafés, galleries, and the summer festival, with deeded parking and low-maintenance living.',
-    features: [
-      'Renovated kitchen and baths',
-      'Original windows and trim',
-      'Deeded off-street parking',
-      'In-unit laundry',
-      'Walk Score 92',
-      'Low monthly HOA',
-    ],
-    image: svgPlaceholder({ from: '#0E2440', to: '#1F4E86', label: 'Rochester, NY', tag: 'SAMPLE' }),
+    features: ['Renovated kitchen and baths', 'Original windows and trim', 'Deeded off-street parking', 'In-unit laundry', 'Walk Score 92', 'Low monthly HOA'],
+    image: svgPlaceholder({ from: '#0B1E3A', to: '#3567B6', label: 'Rochester, NY', tag: 'SAMPLE' }),
     images: galleryFor('Rochester, NY', 1, 4),
   },
   {
@@ -242,29 +185,15 @@ const PROPERTIES = [
     status: 'Pending',
     price: 689000,
     address: '912 Holt Road',
-    city: 'Webster',
-    state: 'NY',
-    zip: '14580',
+    city: 'Webster', state: 'NY', zip: '14580',
     type: 'Single-Family',
-    beds: 5,
-    baths: 4,
-    sqft: 3620,
-    yearBuilt: 2014,
-    lot: '0.78 acre',
-    featured: true,
-    sample: true,
+    beds: 5, baths: 4, sqft: 3620, yearBuilt: 2014, lot: '0.78 acre',
+    featured: true, sample: true,
     short: 'Five-bedroom craftsman on nearly an acre with a resort-style backyard.',
     description:
       'A stately craftsman estate set on nearly an acre in sought-after Webster. Soaring ceilings, a two-story stone fireplace, and a gourmet kitchen anchor the main level. The private backyard features a heated pool, outdoor kitchen, and mature landscaping — an entertainer’s retreat minutes from the village and the lake.',
-    features: [
-      'Two-story stone fireplace',
-      'Gourmet kitchen with butler’s pantry',
-      'Heated in-ground pool',
-      'Outdoor kitchen',
-      'First-floor office',
-      'Three-car garage',
-    ],
-    image: svgPlaceholder({ from: '#11243A', to: '#2A2118', label: 'Webster, NY', tag: 'SAMPLE' }),
+    features: ['Two-story stone fireplace', 'Gourmet kitchen with butler’s pantry', 'Heated in-ground pool', 'Outdoor kitchen', 'First-floor office', 'Three-car garage'],
+    image: svgPlaceholder({ from: '#14203A', to: '#27406E', label: 'Webster, NY', tag: 'SAMPLE' }),
     images: galleryFor('Webster, NY', 2, 5),
   },
   {
@@ -273,29 +202,15 @@ const PROPERTIES = [
     status: 'For Sale',
     price: 274900,
     address: '45 Sweetbriar Lane',
-    city: 'Penfield',
-    state: 'NY',
-    zip: '14526',
+    city: 'Penfield', state: 'NY', zip: '14526',
     type: 'Single-Family',
-    beds: 3,
-    baths: 2,
-    sqft: 1620,
-    yearBuilt: 1978,
-    lot: '0.33 acre',
-    featured: false,
-    sample: true,
+    beds: 3, baths: 2, sqft: 1620, yearBuilt: 1978, lot: '0.33 acre',
+    featured: false, sample: true,
     short: 'Well-kept ranch sold as part of an estate — single-level, move-in ready.',
     description:
       'A solid single-level ranch in a quiet Penfield neighborhood, offered as part of a thoughtfully managed estate sale. Three bedrooms, an updated main bath, and a bright living room with a wood-burning fireplace. A practical floor plan and large lot make this an excellent value for first-time buyers or those downsizing.',
-    features: [
-      'Single-level living',
-      'Wood-burning fireplace',
-      'Updated main bathroom',
-      'Large fenced lot',
-      'Newer roof (2019)',
-      'Full basement',
-    ],
-    image: svgPlaceholder({ from: '#0B1B2B', to: '#3A2F1C', label: 'Penfield, NY', tag: 'SAMPLE' }),
+    features: ['Single-level living', 'Wood-burning fireplace', 'Updated main bathroom', 'Large fenced lot', 'Newer roof (2019)', 'Full basement'],
+    image: svgPlaceholder({ from: '#1B2C4A', to: '#9B7C34', label: 'Penfield, NY', tag: 'SAMPLE' }),
     images: galleryFor('Penfield, NY', 3, 4),
   },
   {
@@ -304,29 +219,15 @@ const PROPERTIES = [
     status: 'Sold',
     price: 398000,
     address: '8 Stonegate Court',
-    city: 'Pittsford',
-    state: 'NY',
-    zip: '14534',
+    city: 'Pittsford', state: 'NY', zip: '14534',
     type: 'Townhouse',
-    beds: 3,
-    baths: 3,
-    sqft: 2080,
-    yearBuilt: 2001,
-    lot: null,
-    featured: false,
-    sample: true,
+    beds: 3, baths: 3, sqft: 2080, yearBuilt: 2001, lot: null,
+    featured: false, sample: true,
     short: 'Maintenance-free townhouse in award-winning Pittsford schools — recently sold.',
     description:
       'A maintenance-free townhouse in the heart of Pittsford, within the award-winning Pittsford school district. Three levels of comfortable living, a private patio, and an attached garage. Walkable to the canal path and village shops. This listing recently closed — contact Shakeel for similar opportunities.',
-    features: [
-      'Pittsford school district',
-      'Private rear patio',
-      'Attached garage',
-      'Open-concept main level',
-      'Finished lower level',
-      'Steps to the canal path',
-    ],
-    image: svgPlaceholder({ from: '#13314F', to: '#0E2440', label: 'Pittsford, NY', tag: 'SAMPLE' }),
+    features: ['Pittsford school district', 'Private rear patio', 'Attached garage', 'Open-concept main level', 'Finished lower level', 'Steps to the canal path'],
+    image: svgPlaceholder({ from: '#102A4E', to: '#5A78A8', label: 'Pittsford, NY', tag: 'SAMPLE' }),
     images: galleryFor('Pittsford, NY', 4, 4),
   },
   {
@@ -335,51 +236,90 @@ const PROPERTIES = [
     status: 'For Sale',
     price: 189000,
     address: 'Lot 12 Seneca Ridge Road',
-    city: 'Geneva',
-    state: 'NY',
-    zip: '14456',
+    city: 'Geneva', state: 'NY', zip: '14456',
     type: 'Land',
-    beds: 0,
-    baths: 0,
-    sqft: 0,
-    yearBuilt: null,
-    lot: '11.4 acres',
-    featured: false,
-    sample: true,
+    beds: 0, baths: 0, sqft: 0, yearBuilt: null, lot: '11.4 acres',
+    featured: false, sample: true,
     short: 'Gently sloping acreage with lake views — ideal for a vineyard or estate home.',
     description:
       'A rare 11.4-acre parcel in the heart of Finger Lakes wine country, with gentle southern slopes and long views toward Seneca Lake. Soils and exposure well suited to a boutique vineyard, with an obvious building envelope for an estate home. Utilities at the road; survey available. A blank canvas in one of Upstate NY’s most desirable regions.',
-    features: [
-      '11.4 acres, gentle south slope',
-      'Seneca Lake views',
-      'Utilities at the road',
-      'Survey available',
-      'Vineyard-suitable soils',
-      'No HOA',
-    ],
-    image: svgPlaceholder({ from: '#1A1E26', to: '#163A6B', label: 'Geneva, NY', tag: 'SAMPLE' }),
+    features: ['11.4 acres, gentle south slope', 'Seneca Lake views', 'Utilities at the road', 'Survey available', 'Vineyard-suitable soils', 'No HOA'],
+    image: svgPlaceholder({ from: '#0E2240', to: '#2D5BA8', label: 'Geneva, NY', tag: 'SAMPLE' }),
     images: galleryFor('Geneva, NY', 5, 4),
   },
 ];
 
 
 /* ============================================================================
-   TRANSACTIONS — honest "Recent Transactions" (exactly 5, representative)
-   ----------------------------------------------------------------------------
-   No fabricated testimonials, prices, or counts. These describe the TYPE of
-   work and outcome only. Marked representative in the UI.
+   TRANSACTIONS — honest Portfolio (representative; story + service, no numbers)
    ========================================================================== */
 const TRANSACTIONS = [
-  { type: 'Single-Family Home', area: 'Greece, NY', role: 'Listing Agent (Seller)', status: 'Sold' },
-  { type: 'Probate / Estate Sale', area: 'Rochester, NY', role: 'Listing Agent (Estate)', status: 'Sold' },
-  { type: 'Condominium', area: 'Penfield, NY', role: 'Buyer’s Agent', status: 'Sold' },
-  { type: 'Multi-Family', area: 'Monroe County, NY', role: 'Listing Agent (Seller)', status: 'Sold' },
-  { type: 'Relocation Purchase', area: 'Webster, NY', role: 'Buyer’s Agent', status: 'Sold' },
+  {
+    id: 'tx-greece-single-family',
+    type: 'Single-Family Home',
+    location: 'Greece, NY',
+    status: 'Sold',
+    service: 'Seller Representation · Listing & Marketing',
+    story: 'Helped a local family prepare, price and market their longtime home, guiding them through showings and offers to a smooth closing.',
+    image: svgPlaceholder({ from: '#102A4E', to: '#2D5BA8', label: 'Greece, NY', tag: 'SOLD' }),
+  },
+  {
+    id: 'tx-rochester-probate',
+    type: 'Probate / Estate Sale',
+    location: 'Rochester, NY',
+    status: 'Sold',
+    service: 'Estate Sale Management · Attorney Coordination',
+    story: 'Managed a time-sensitive estate sale with care, coordinating with the family and their attorney from cleanout through a respectful sale.',
+    image: svgPlaceholder({ from: '#0B1E3A', to: '#3567B6', label: 'Rochester, NY', tag: 'SOLD' }),
+  },
+  {
+    id: 'tx-penfield-condo',
+    type: 'Condominium',
+    location: 'Penfield, NY',
+    status: 'Sold',
+    service: 'Buyer Representation · First-Time Buyer',
+    story: 'Guided a first-time buyer through search, financing and negotiation, helping them confidently purchase their first home.',
+    image: svgPlaceholder({ from: '#14203A', to: '#27406E', label: 'Penfield, NY', tag: 'SOLD' }),
+  },
+  {
+    id: 'tx-monroe-multifamily',
+    type: 'Multi-Family',
+    location: 'Monroe County, NY',
+    status: 'Sold',
+    service: 'Seller Representation · Investment Property',
+    story: 'Advised an investor on positioning and pricing a multi-family property, marketing it to qualified buyers through to closing.',
+    image: svgPlaceholder({ from: '#1B2C4A', to: '#9B7C34', label: 'Monroe County, NY', tag: 'SOLD' }),
+  },
+  {
+    id: 'tx-webster-relocation',
+    type: 'Relocation Purchase',
+    location: 'Webster, NY',
+    status: 'Sold',
+    service: 'Buyer Representation · Relocation',
+    story: 'Supported a relocating client moving into the Rochester area, handling remote tours and logistics for an out-of-town purchase.',
+    image: svgPlaceholder({ from: '#102A4E', to: '#5A78A8', label: 'Webster, NY', tag: 'SOLD' }),
+  },
+];
+
+
+/* ============================================================================
+   MEDIA — professional media gallery tiles (placeholders to swap with real)
+   type: 'image' | 'video'. Replace `image` with real photo/thumbnail URLs.
+   ========================================================================== */
+const MEDIA = [
+  { label: 'Professional Headshot', tag: 'PORTRAIT', type: 'image', image: 'assets/img/shakeel-ahmad.jpg' },
+  { label: 'Property Photography', tag: 'LISTINGS', type: 'image', image: svgPlaceholder({ from: '#102A4E', to: '#2D5BA8', label: 'Property Photos', tag: 'GALLERY' }) },
+  { label: 'Community Events', tag: 'LOCAL', type: 'image', image: svgPlaceholder({ from: '#0B1E3A', to: '#3567B6', label: 'Community', tag: 'EVENTS' }) },
+  { label: 'Open Houses', tag: 'IN PERSON', type: 'image', image: svgPlaceholder({ from: '#1B2C4A', to: '#9B7C34', label: 'Open Houses', tag: 'TOURS' }) },
+  { label: 'Social Media', tag: 'ONLINE', type: 'image', image: svgPlaceholder({ from: '#14203A', to: '#27406E', label: 'Social Content', tag: 'POSTS' }) },
+  { label: 'Video Previews', tag: 'WATCH', type: 'video', image: svgPlaceholder({ from: '#102A4E', to: '#5A78A8', label: 'Video Tours', tag: 'VIDEO' }) },
 ];
 
 
 /* Expose to other scripts (plain globals — no module system / build step). */
 window.SITE = SITE;
+window.STATS = STATS;
 window.PROPERTIES = PROPERTIES;
 window.TRANSACTIONS = TRANSACTIONS;
+window.MEDIA = MEDIA;
 window.svgPlaceholder = svgPlaceholder;

@@ -1,21 +1,15 @@
 /* ============================================================================
-   property.js — renders property.html from ?id=<slug>
-   ----------------------------------------------------------------------------
-   Builds: breadcrumb, gallery (main + thumbs), price/address, spec strip,
-   description, features, styled map placeholder, "Schedule a Showing" form,
-   sticky agent contact card, and Related Properties.
-
-   Graceful "not found" state when the id is missing/unknown.
-   Depends on data.js + main.js (reuses propertyCardHTML / PROP_ICONS).
+   property.js — renders property.html from ?id=<slug>  (2.0 light theme)
+   Breadcrumb, gallery, price/specs, description, features, map placeholder,
+   "Schedule a Showing" form, sticky agent card, related listings, 404 state.
+   Reuses propertyCardHTML / PROP_ICONS from main.js.
    ========================================================================== */
 
 (function () {
   'use strict';
-
-  const $  = (sel, ctx = document) => ctx.querySelector(sel);
-  const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+  const $  = (s, c = document) => c.querySelector(s);
+  const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
   const ICONS = window.PROP_ICONS || {};
-
   const formatPrice = (n) =>
     typeof n === 'number'
       ? n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
@@ -24,71 +18,50 @@
   const root = $('#property-root');
   if (!root || !window.PROPERTIES) return;
 
-  // Resolve the requested listing.
   const id = new URLSearchParams(location.search).get('id');
   const p = PROPERTIES.find((x) => x.id === id);
 
-  /* ----------------------------------------------------- NOT FOUND state */
+  /* NOT FOUND --------------------------------------------------------------*/
   if (!p) {
     document.title = 'Property not found · Shakeel Ahmad Realtor';
     root.innerHTML = `
       <section class="section">
         <div class="container narrow center">
-          <p class="eyebrow center" style="justify-content:center">Error 404</p>
+          <p class="eyebrow center">Error 404</p>
           <h1>We couldn’t find that listing</h1>
-          <p class="lede mx-auto">The property you’re looking for may have sold or the link may be incomplete.
-             Browse current listings or get in touch and I’ll help you find the right home.</p>
+          <p class="lede mx-auto">It may have sold, or the link may be incomplete. Browse current listings or get in touch and I’ll help you find the right home.</p>
           <div class="cta-band"><div class="btn-row">
-            <a class="btn btn--gold" href="properties.html">Browse Listings</a>
-            <a class="btn btn--outline" href="contact.html">Contact Shakeel</a>
+            <a class="btn btn--primary" href="properties.html">Browse Listings</a>
+            <a class="btn btn--outline" href="index.html#contact">Contact Shakeel</a>
           </div></div>
         </div>
       </section>`;
     return;
   }
 
-  /* --------------------------------------------------------- page <head> */
+  /* <head> -----------------------------------------------------------------*/
   document.title = `${p.address}, ${p.city} ${p.state} · Shakeel Ahmad Realtor`;
   const metaDesc = $('meta[name="description"]');
   if (metaDesc) metaDesc.setAttribute('content', `${p.status} — ${formatPrice(p.price)}. ${p.short}`);
-  // Keep canonical pointing at the specific listing.
   const canon = $('link[rel="canonical"]');
   if (canon) canon.setAttribute('href', `${SITE.origin}/property.html?id=${encodeURIComponent(p.id)}`);
 
-  /* ------------------------------------------------------ spec strip data */
-  const specCells =
-    p.type === 'Land'
-      ? [
-          { v: p.lot || '—', k: 'Lot Size' },
-          { v: p.type, k: 'Type' },
-          { v: p.status, k: 'Status' },
-          { v: p.zip, k: 'Zip' },
-        ]
-      : [
-          { v: p.beds, k: 'Beds' },
-          { v: p.baths, k: 'Baths' },
-          { v: p.sqft.toLocaleString(), k: 'Sq Ft' },
-          { v: p.yearBuilt || '—', k: 'Year Built' },
-        ];
+  /* spec strip -------------------------------------------------------------*/
+  const specCells = p.type === 'Land'
+    ? [{ v: p.lot || '—', k: 'Lot Size' }, { v: p.type, k: 'Type' }, { v: p.status, k: 'Status' }, { v: p.zip, k: 'Zip' }]
+    : [{ v: p.beds, k: 'Beds' }, { v: p.baths, k: 'Baths' }, { v: p.sqft.toLocaleString(), k: 'Sq Ft' }, { v: p.yearBuilt || '—', k: 'Year Built' }];
 
-  /* ------------------------------------------------------------- gallery */
+  /* gallery ----------------------------------------------------------------*/
   const images = (p.images && p.images.length) ? p.images : [p.image];
-  const thumbsHTML = images
-    .map(
-      (src, i) => `
-      <button class="gallery__thumb" type="button" data-index="${i}"
-              aria-current="${i === 0}" aria-label="Show photo ${i + 1}">
-        <img src="${src}" alt="${p.title} photo ${i + 1}" loading="lazy" width="160" height="160">
-      </button>`
-    )
-    .join('');
+  const thumbsHTML = images.map((src, i) => `
+    <button class="gallery__thumb" type="button" data-index="${i}" aria-current="${i === 0}" aria-label="Show photo ${i + 1}">
+      <img src="${src}" alt="${p.title} photo ${i + 1}" loading="lazy" width="160" height="160">
+    </button>`).join('');
 
-  /* ------------------------------------------------------------ features */
   const featuresHTML = (p.features || []).map((f) => `<li>${f}</li>`).join('');
 
-  /* ----------------------------------------------------------- assemble */
+  /* assemble ---------------------------------------------------------------*/
   root.innerHTML = `
-    <!-- Breadcrumb + page hero strip -->
     <section class="page-hero">
       <div class="container">
         <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -96,21 +69,18 @@
           <a href="properties.html">Properties</a> <span aria-hidden="true">/</span>
           <span aria-current="page">${p.address}</span>
         </nav>
-        <p class="eyebrow on-dark">${p.city}, ${p.state} · ${p.type}</p>
+        <p class="eyebrow">${p.city}, ${p.state} · ${p.type}</p>
         <h1>${p.title}</h1>
-        ${p.sample ? '<p class="note-italic" style="color:#C2D0E0">Sample listing — replace with live MLS data before launch.</p>' : ''}
+        ${p.sample ? '<p class="note-italic">Sample listing — replace with live MLS data before launch.</p>' : ''}
       </div>
     </section>
 
-    <section class="section">
+    <section class="section section--tight">
       <div class="container">
         <div class="detail-grid">
-          <!-- LEFT: gallery + content -->
           <div>
             <div class="gallery">
-              <div class="gallery__main">
-                <img id="gallery-main" src="${images[0]}" alt="${p.title} — ${p.address}" width="1200" height="750">
-              </div>
+              <div class="gallery__main"><img id="gallery-main" src="${images[0]}" alt="${p.title} — ${p.address}" width="1200" height="750"></div>
               ${images.length > 1 ? `<div class="gallery__thumbs">${thumbsHTML}</div>` : ''}
             </div>
 
@@ -119,11 +89,9 @@
               <div class="detail-price">${formatPrice(p.price)}</div>
               <div class="detail-addr">${p.address}</div>
               <div class="detail-city">${p.city}, ${p.state} ${p.zip}</div>
-
               <div class="spec-strip">
                 ${specCells.map((c) => `<div class="cell"><div class="v">${c.v}</div><div class="k">${c.k}</div></div>`).join('')}
               </div>
-
               <p>${p.description}</p>
             </div>
 
@@ -134,7 +102,6 @@
               <ul class="features">${featuresHTML}</ul>
             </div>` : ''}
 
-            <!-- Map placeholder (styled). Swap for Google Maps embed later. -->
             <div style="margin-top:2.5rem">
               <p class="eyebrow">03 — Location</p>
               <h2>On the map</h2>
@@ -147,11 +114,10 @@
             </div>
           </div>
 
-          <!-- RIGHT: sticky agent card + showing form -->
           <aside>
-            <div class="card agent-card" style="padding:1.4rem">
+            <div class="card card-pad agent-card">
               <div class="agent-card__head">
-                <img class="agent-card__photo" src="assets/img/shakeel-ahmad.jpg" alt="${SITE.name}" width="54" height="54" loading="lazy">
+                <img class="agent-card__photo" src="${SITE.headshot}" alt="${SITE.name}" width="56" height="56" loading="lazy">
                 <div>
                   <div class="name">${SITE.name}</div>
                   <div class="role">${SITE.role}</div>
@@ -166,8 +132,7 @@
               <p class="lic">${SITE.brokerage} · ${SITE.license}</p>
             </div>
 
-            <!-- Schedule a Showing form -->
-            <div class="card" style="padding:1.4rem; margin-top:1.2rem" id="showing-form">
+            <div class="card card-pad form-card--accent" style="margin-top:1.2rem" id="showing-form">
               <p class="eyebrow">Request a tour</p>
               <h3 style="margin-bottom:1rem">Schedule a Showing</h3>
               <form class="form" data-form="showing" novalidate>
@@ -192,11 +157,11 @@
                     <label for="sf-msg">Message (optional)</label>
                     <textarea id="sf-msg" name="message" placeholder="Preferred days/times to tour this home…" style="min-height:90px"></textarea>
                   </div>
-                  <button class="btn btn--gold btn--block" type="submit">Request Showing</button>
+                  <button class="btn btn--primary btn--block" type="submit">Request Showing</button>
                   <p class="note-italic" style="font-size:.82rem">By submitting you agree to be contacted about this property.</p>
                 </div>
                 <div class="form-success" role="status" aria-live="polite">
-                  <div class="form-success__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg></div>
+                  <div class="form-success__check" aria-hidden="true">${ICONS.check || ''}</div>
                   <h3>Request received</h3>
                   <p class="text-soft">Thanks — I’ll reach out shortly to confirm a showing time.</p>
                 </div>
@@ -207,44 +172,32 @@
       </div>
     </section>
 
-    <!-- Related properties -->
     <div id="related-mount"></div>
   `;
 
-  /* ------------------------------------------------------ gallery wiring */
+  /* gallery wiring ---------------------------------------------------------*/
   const mainImg = $('#gallery-main', root);
   $$('.gallery__thumb', root).forEach((btn) => {
     btn.addEventListener('click', () => {
-      const i = Number(btn.dataset.index);
-      mainImg.src = images[i];
+      mainImg.src = images[Number(btn.dataset.index)];
       $$('.gallery__thumb', root).forEach((b) => b.setAttribute('aria-current', String(b === btn)));
     });
   });
 
-  /* ----------------------------------------------- related (auto, no edits)
-     Prefer same city; fall back to same type; then fill with others.
-     Always 3, never the current listing. */
-  function relatedFor(current) {
-    const pool = PROPERTIES.filter((x) => x.id !== current.id);
-    const score = (x) =>
-      (x.city === current.city ? 2 : 0) + (x.type === current.type ? 1 : 0);
+  /* related (auto) ---------------------------------------------------------*/
+  function relatedFor(cur) {
+    const pool = PROPERTIES.filter((x) => x.id !== cur.id);
+    const score = (x) => (x.city === cur.city ? 2 : 0) + (x.type === cur.type ? 1 : 0);
     return pool.sort((a, b) => score(b) - score(a)).slice(0, 3);
   }
-
   const related = relatedFor(p);
   if (related.length && window.propertyCardHTML) {
     $('#related-mount').innerHTML = `
-      <section class="section section--cream">
+      <section class="section section--gray">
         <div class="container">
-          <div class="section-head">
-            <p class="eyebrow">Keep exploring</p>
-            <h2>Related Properties</h2>
-          </div>
+          <div class="section-head"><p class="eyebrow">Keep exploring</p><h2>Related Properties</h2></div>
           <div class="grid grid-3">${related.map(window.propertyCardHTML).join('')}</div>
         </div>
       </section>`;
   }
-
-  // Initialize reveals + form handling for the freshly injected DOM.
-  document.dispatchEvent(new Event('property:rendered'));
 })();

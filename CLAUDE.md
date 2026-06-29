@@ -20,21 +20,24 @@ a fuller platform (CMS/MLS feed, maps, booking, CRM) without refactoring the fro
 - Ask before writing files; after a task, print a short file tree and the preview command, then wait for review.
 
 ## File / folder architecture (do not reorganize without reason)
+Redesigned (2.0) as a light, conversion-focused **3-page** site + a detail template.
 ```
 /
-├── index.html          # Home
-├── properties.html     # All listings + live filters
-├── property.html       # Single listing detail (reads ?id=slug)
-├── about.html          # About + honest Portfolio
-├── contact.html        # Contact + form
+├── index.html            # Home + Portfolio + Media + Contact (short lead form)
+├── properties.html       # All listings + live filters
+├── property.html         # Single listing detail (reads ?id=slug) — linked from cards
+├── buyers-sellers.html   # Lead-gen: buyer & seller paths + detailed forms
 ├── robots.txt  sitemap.xml  README.md
 └── assets/
-    ├── css/styles.css  # full design system (one file)
+    ├── img/shakeel-ahmad.jpg   # real headshot
+    ├── css/styles.css          # full light design system (one file)
     └── js/
-        ├── data.js     # SITE + PROPERTIES + TRANSACTIONS  (SINGLE SOURCE OF TRUTH)
-        ├── main.js     # nav, mobile menu, reveals, property-card render, grid + filters, forms
+        ├── data.js     # SITE + STATS + PROPERTIES + TRANSACTIONS + MEDIA (SINGLE SOURCE OF TRUTH)
+        ├── main.js     # nav, reveals, counters, renderers (featured/portfolio/media), grid + filters, forms
         └── property.js # renders property.html from ?id=
 ```
+Nav: Home · Properties · Buyers & Sellers · Contact (button → `index.html#contact`).
+(`about.html` / `contact.html` were removed in 2.0 — folded into Home.)
 **Golden rule:** adding ONE object to `PROPERTIES` in `data.js` must automatically render its
 card, work in the filters, generate its detail page (`property.html?id=slug`), and appear in
 "related" — with zero other edits. Keep this guarantee intact.
@@ -79,49 +82,54 @@ npx vercel        # or: npx netlify deploy   # or: GitHub Pages
 - Add "Read my reviews on Zillow" and "Reviews on Google" CTAs linking out. **Never fabricate
   review counts or quotes** — only link to the profiles.
 
-## Design system (premium luxury — keep it custom, not templated)
-Vibe: refined modern-luxury US real estate — editorial, lots of whitespace, confident.
+## Design system (2.0 — light, modern, premium personal brand)
+Vibe: very light, elegant, lots of whitespace, large type — high-end US real-estate brand
+that communicates trust within 10 seconds. (Inspired by the UX of HomesWithJLV — not copied.)
 
-**Color tokens (`:root`):**
+**Color tokens (`:root`) — light theme:**
 ```
---ink:#0B1B2B; --navy:#0E2440; --navy-700:#163A6B;
---bone:#FBF9F5; --cream:#F6F1E8; --slate:#5A6573; --line:#E7E0D4;
---gold:#B8924E; --gold-light:#D8BC86; --gold-dark:#8F6E33; --white:#FFFFFF;
+--white:#FFFFFF; --off-white:#FAFBFC; --gray-50:#F5F7FA; --gray-100:#EEF2F7; --line:#E2E8F1;
+--charcoal:#16202E (body); --ink:#0B1422 (headings); --slate:#5C6878;
+--navy:#102A4E (primary); --blue:#2D5BA8 (accent); --blue-50:#EAF1FB;
+--gold:#C2A053; --gold-light:#E4CC8C; --gold-dark:#9B7C34;
 ```
-- Dominant dark surfaces (hero, footer, CTA bands) = ink/navy; light sections = bone/cream.
-- **Champagne gold is for accents, CTAs, and active states only — never decorative.** No brassy/neon gold. Don't distribute color evenly.
+- White / gray surfaces dominate; **navy band** only for CTA emphasis (hero art card, contact,
+  appointment). Navy = primary buttons; blue = links/secondary; **gold = restrained luxury
+  accent only** (eyebrow ticks, hairlines, the single top CTA per section). Don't distribute gold evenly.
 
 **Typography (Google Fonts):**
-- Display headlines: **Fraunces** (elegant high-contrast serif)
-- Body / UI: **Manrope**
-- Labels / eyebrows / section indices / meta: **Space Mono** (uppercase, letter-spacing .14em)
+- Display headlines: **Space Grotesk**
+- Body / UI / eyebrows: **Manrope** (eyebrows uppercase, letter-spacing .18em)
 
 **Components & signature:**
-- Sticky glassmorphism header (transparent over dark hero → frosted on scroll).
-- Brand monogram seal **"SA"** in a thin gold ring; gold hairline rules; numbered section
-  indices ("01 — Services") as the editorial signature.
-- Rounded cards (16–20px), soft shadows, subtle navy/gold gradients, 1px gold/line borders.
-- Editorial property cards: status badge, price, beds/baths/sqft icons, hover image-zoom + lift.
-- Gold CTAs with hover lift; underline-wipe nav links.
+- Sticky glass header (transparent → frosted white on scroll); brand seal **"SA"** in a navy rounded chip.
+- Custom **animated isometric architecture SVG** hero (no stock photos) with floating glass trust badges.
+- Eyebrow "01 — Section" indices; gold hairline tick before eyebrows.
+- Rounded cards (16–28px), soft shadows, glass cards; property + portfolio cards with hover image-zoom + lift.
+- **Animated counters** (factual stats only). Navy primary CTAs; one gold accent CTA per section.
 
 **Motion (tasteful, not flashy):** one orchestrated hero load (staggered fade/rise),
 fade-in-on-scroll via IntersectionObserver, gentle hover micro-interactions, smooth scroll,
 sticky mobile call/book CTA bar. Always respect `prefers-reduced-motion`.
 
-## Page map
-- **Home:** dark hero + glass search card; about preview w/ credibility stats; 3 services
-  (Buying / Selling / Probate & Estate); Featured Properties (from data); Areas Served;
-  Why Work With Shakeel; Zillow+Google reviews trust strip; final CTA band; footer.
+## Page map (2.0 — 3 main pages)
+- **Home + Portfolio (`index.html`):** light hero with animated isometric architecture SVG +
+  floating trust badges + CTAs (Schedule Consultation / View Properties / Contact Me);
+  animated stat counters; about/bio with headshot + Areas Served; Experience (3 services);
+  **Portfolio** of `TRANSACTIONS` cards (image, location, type, status, story, service);
+  Featured Listings; **Media gallery** from `MEDIA`; Zillow+Google reviews strip; navy
+  **Contact** section with short lead form (`#contact`); footer.
 - **Properties:** hero strip + sticky filter toolbar (search + city/type/price/status) that
   live-filters the grid; result count; empty state. Sample listings labeled as such.
 - **Property detail (`?id=`):** breadcrumb, gallery, price, spec strip, description, features,
   map placeholder, "Schedule a Showing" form, sticky agent contact card, related listings,
   graceful "not found".
-- **About / Portfolio:** bio, experience, mission, values; professional photo placeholder
-  (commented `<img>` swap spot); **exactly 5** honest "Recent Transactions" from `TRANSACTIONS`.
-- **Contact:** info cards (call/text, office, email, address, hours), socials, map placeholder,
-  validated consultation form with success state.
-- CTAs sitewide: Book Consultation, Call Now, Schedule Showing, Request Property Info.
+- **Buyers & Sellers:** split buyer/seller paths (process steps + benefits + CTA); detailed
+  forms — Buyer Consultation, Seller Consultation + Home Valuation, Appointment Request —
+  each capturing name, phone, email, preferred contact method, message, buying/selling,
+  budget, timeline, city.
+- CTAs sitewide: Schedule Consultation, Call Now, Schedule Showing, Home Valuation,
+  Buyer/Seller Consultation, Request Appointment.
 
 ## SEO requirements (every page)
 - Unique `<title>`, meta description, canonical, Open Graph + Twitter card tags.
@@ -135,10 +143,11 @@ commented spot to connect a real endpoint (e.g. Formspree)**. Search `Connect a 
 
 ## HARD RULES (non-negotiable)
 - **No fake testimonials. No invented sales numbers. No unrealistic claims.** Only 5 real
-  transactions exist — keep the portfolio honest and modest.
+  transactions exist — keep the portfolio honest and modest. Counters use factual figures only.
 - Keep the agent's real NAP exactly as above; don't alter phone/email/license.
 - Maintain the data-driven "add one object" guarantee.
-- Keep gold as an accent only; keep the type system (Fraunces / Manrope / Space Mono) intact.
+- Keep gold as an accent only; keep the type system (Space Grotesk / Manrope) intact; keep the
+  light theme (white/gray surfaces, navy + blue, gold accent).
 
 ## Future-proofing (add later WITHOUT refactoring)
 CMS/MLS feed (swap `data.js` for an API response of the same shape), Google Maps (replace
