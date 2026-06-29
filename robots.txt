@@ -1,0 +1,7 @@
+# robots.txt — Shakeel Ahmad Realtor
+# Allow all crawlers full access to the public site.
+User-agent: *
+Allow: /
+
+# Point crawlers to the sitemap.
+Sitemap: https://www.shakeelahmadrealtor.com/sitemap.xml

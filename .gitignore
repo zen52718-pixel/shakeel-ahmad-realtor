@@ -1,0 +1,14 @@
+# Claude Code local settings (machine-specific)
+.claude/settings.local.json
+
+# Vercel
+.vercel
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+
+# Dependencies (none currently — static site, no build step)
+node_modules/
