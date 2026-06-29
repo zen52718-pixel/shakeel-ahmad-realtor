@@ -101,7 +101,7 @@ const SITE = {
   role: 'Licensed Real Estate Salesperson',
   monogram: 'SA',
   brokerage: 'Platinum Properties',
-  license: 'DRE# 49NE1128162',
+  license: 'NYS License #10401314142',
 
   // Contact (NAP)
   cell: '(718) 696-9245',

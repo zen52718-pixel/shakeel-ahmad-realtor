@@ -59,7 +59,7 @@ npx vercel        # or: npx netlify deploy   # or: GitHub Pages
 
 ## Brand / agent data — use everywhere, never invent
 - **Name:** Shakeel Ahmad — Licensed Real Estate Salesperson
-- **Brokerage:** Platinum Properties  ·  **License:** DRE# 49NE1128162
+- **Brokerage:** Platinum Properties  ·  **License:** NYS License #10401314142
 - **Cell / text:** (718) 696-9245  ·  **Office:** (585) 458-4250
 - **Email:** info@shakeelahmadrealtor.com
 - **Office:** 2270 Latta Road, Greece, NY 14612

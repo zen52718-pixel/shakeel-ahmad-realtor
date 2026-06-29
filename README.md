@@ -128,7 +128,7 @@ show a success state, and `console.log` the payload.
 |------------|-------|
 | Name       | Shakeel Ahmad — Licensed Real Estate Salesperson |
 | Brokerage  | Platinum Properties |
-| License    | DRE# 49NE1128162 |
+| License    | NYS License #10401314142 |
 | Cell/text  | (718) 696-9245 |
 | Office     | (585) 458-4250 |
 | Email      | info@shakeelahmadrealtor.com |
@@ -173,4 +173,4 @@ Footer shows the brokerage name and **Equal Housing Opportunity** (NY advertisin
 
 ---
 
-© Shakeel Ahmad · Platinum Properties · DRE# 49NE1128162 · Equal Housing Opportunity
+© Shakeel Ahmad · Platinum Properties · NYS License #10401314142 · Equal Housing Opportunity
