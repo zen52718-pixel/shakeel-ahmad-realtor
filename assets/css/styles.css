@@ -331,7 +331,15 @@ hr.rule { height: 1px; background: var(--line); border: 0; margin: 0; }
 }
 /* Real cutout photo (transparent PNG) — floats directly over the gradient, no card frame */
 .hero__cutout { position: relative; z-index: 1; max-width: 460px; margin-inline: auto; }
-.hero__cutout img { width: 100%; height: auto; display: block; filter: drop-shadow(0 26px 34px rgba(28,17,9,.35)); }
+.hero__cutout::before {
+  content: ""; position: absolute; z-index: 0;
+  left: 50%; top: 4%; transform: translateX(-50%);
+  width: 84%; height: 94%;
+  background: var(--off-white);
+  border-radius: var(--r-arch) var(--r-arch) var(--r-lg) var(--r-lg);
+  box-shadow: var(--shadow-lg);
+}
+.hero__cutout img { position: relative; z-index: 1; width: 100%; height: auto; display: block; filter: drop-shadow(0 26px 34px rgba(28,17,9,.35)); }
 
 /* Floating "listing preview" card peeking near the hero photo — browser-mockup feel */
 .hero__listing-peek {
