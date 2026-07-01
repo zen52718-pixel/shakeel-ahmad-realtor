@@ -4,9 +4,6 @@
    Everything the site renders reads from the objects here:
      • SITE          → brand / agent NAP, hours, markets, socials, SEO
      • PROPERTIES    → listings (cards, filters, detail page, related)
-     • TRANSACTIONS  → honest Portfolio entries (story + service, no numbers)
-     • MEDIA         → professional media gallery tiles (placeholders)
-     • STATS         → factual animated counters (no invented figures)
 
    GOLDEN RULE
    -----------
@@ -130,18 +127,6 @@ const SITE = {
 
 
 /* ============================================================================
-   STATS — factual animated counters (NO invented sales figures)
-   value is the count-up target; suffix/label describe it honestly.
-   ========================================================================== */
-const STATS = [
-  { value: 9, suffix: '', label: 'Areas Served Across NY' },
-  { value: 6, suffix: '', label: 'Days a Week, 8AM–8PM' },
-  { value: 5, suffix: '', label: 'Property Types Handled' },
-  { value: 100, suffix: '%', label: 'Client-First Representation' },
-];
-
-
-/* ============================================================================
    PROPERTIES — listings (single source of truth, stable shape)
    ========================================================================== */
 const PROPERTIES = [
@@ -250,93 +235,7 @@ const PROPERTIES = [
 ];
 
 
-/* ============================================================================
-   TRANSACTIONS — honest Portfolio (representative; story + service, no numbers)
-   ========================================================================== */
-const TRANSACTIONS = [
-  {
-    id: 'tx-greece-single-family',
-    type: 'Single-Family Home',
-    location: 'Greece, NY',
-    status: 'Sold',
-    service: 'Seller Representation · Listing & Marketing',
-    story: 'Helped a local family prepare, price and market their longtime home, guiding them through showings and offers to a smooth closing.',
-    image: svgPlaceholder({ from: '#102A4E', to: '#2D5BA8', label: 'Greece, NY', tag: 'SOLD' }),
-  },
-  {
-    id: 'tx-rochester-probate',
-    type: 'Probate / Estate Sale',
-    location: 'Rochester, NY',
-    status: 'Sold',
-    service: 'Estate Sale Management · Attorney Coordination',
-    story: 'Managed a time-sensitive estate sale with care, coordinating with the family and their attorney from cleanout through a respectful sale.',
-    image: svgPlaceholder({ from: '#0B1E3A', to: '#3567B6', label: 'Rochester, NY', tag: 'SOLD' }),
-  },
-  {
-    id: 'tx-penfield-condo',
-    type: 'Condominium',
-    location: 'Penfield, NY',
-    status: 'Sold',
-    service: 'Buyer Representation · First-Time Buyer',
-    story: 'Guided a first-time buyer through search, financing and negotiation, helping them confidently purchase their first home.',
-    image: svgPlaceholder({ from: '#14203A', to: '#27406E', label: 'Penfield, NY', tag: 'SOLD' }),
-  },
-  {
-    id: 'tx-monroe-multifamily',
-    type: 'Multi-Family',
-    location: 'Monroe County, NY',
-    status: 'Sold',
-    service: 'Seller Representation · Investment Property',
-    story: 'Advised an investor on positioning and pricing a multi-family property, marketing it to qualified buyers through to closing.',
-    image: svgPlaceholder({ from: '#1B2C4A', to: '#9B7C34', label: 'Monroe County, NY', tag: 'SOLD' }),
-  },
-  {
-    id: 'tx-webster-relocation',
-    type: 'Relocation Purchase',
-    location: 'Webster, NY',
-    status: 'Sold',
-    service: 'Buyer Representation · Relocation',
-    story: 'Supported a relocating client moving into the Rochester area, handling remote tours and logistics for an out-of-town purchase.',
-    image: svgPlaceholder({ from: '#102A4E', to: '#5A78A8', label: 'Webster, NY', tag: 'SOLD' }),
-  },
-];
-
-
-/* ============================================================================
-   MEDIA — professional media gallery tiles (placeholders to swap with real)
-   type: 'image' | 'video'. Replace `image` with real photo/thumbnail URLs.
-   ========================================================================== */
-const MEDIA = [
-  { label: 'Professional Headshot', tag: 'PORTRAIT', type: 'image', image: 'assets/img/shakeel-ahmad.jpg' },
-  { label: 'Property Photography', tag: 'LISTINGS', type: 'image', image: svgPlaceholder({ from: '#102A4E', to: '#2D5BA8', label: 'Property Photos', tag: 'GALLERY' }) },
-  { label: 'Community Events', tag: 'LOCAL', type: 'image', image: svgPlaceholder({ from: '#0B1E3A', to: '#3567B6', label: 'Community', tag: 'EVENTS' }) },
-  { label: 'Open Houses', tag: 'IN PERSON', type: 'image', image: svgPlaceholder({ from: '#1B2C4A', to: '#9B7C34', label: 'Open Houses', tag: 'TOURS' }) },
-  { label: 'Social Media', tag: 'ONLINE', type: 'image', image: svgPlaceholder({ from: '#14203A', to: '#27406E', label: 'Social Content', tag: 'POSTS' }) },
-  { label: 'Video Previews', tag: 'WATCH', type: 'video', image: svgPlaceholder({ from: '#102A4E', to: '#5A78A8', label: 'Video Tours', tag: 'VIDEO' }) },
-];
-
-
-/* ============================================================================
-   AREAS — flagship markets shown as photo cards on the Home hero-adjacent
-   "Areas Served" section. cityFilter must match a PROPERTIES `city` value to
-   deep-link into a filtered properties.html view; leave null for regional
-   areas with no single matching listing city (falls back to the full grid).
-   ========================================================================== */
-const AREAS = [
-  { name: 'NYC', tag: 'Relocation', blurb: 'Relocation & investment purchases to and from the city.', cityFilter: null, image: svgPlaceholder({ from: '#0B1E3A', to: '#3567B6', label: 'New York City' }) },
-  { name: 'Rochester', tag: 'City', blurb: 'Urban neighborhoods, condos and city living.', cityFilter: 'Rochester', image: svgPlaceholder({ from: '#102A4E', to: '#2D5BA8', label: 'Rochester, NY' }) },
-  { name: 'Greece', tag: 'Home Base', blurb: 'Lakefront homes and family neighborhoods near Lake Ontario.', cityFilter: 'Greece', image: svgPlaceholder({ from: '#14203A', to: '#27406E', label: 'Greece, NY' }) },
-  { name: 'Webster', tag: 'Suburban', blurb: 'Established communities and move-up estates.', cityFilter: 'Webster', image: svgPlaceholder({ from: '#1B2C4A', to: '#9B7C34', label: 'Webster, NY' }) },
-  { name: 'Penfield', tag: 'Family', blurb: 'Family-friendly streets and top-rated schools.', cityFilter: 'Penfield', image: svgPlaceholder({ from: '#0E2240', to: '#2D5BA8', label: 'Penfield, NY' }) },
-  { name: 'Pittsford', tag: 'Village', blurb: 'Village charm, the canal path and award-winning schools.', cityFilter: 'Pittsford', image: svgPlaceholder({ from: '#102A4E', to: '#5A78A8', label: 'Pittsford, NY' }) },
-];
-
-
 /* Expose to other scripts (plain globals — no module system / build step). */
 window.SITE = SITE;
-window.STATS = STATS;
 window.PROPERTIES = PROPERTIES;
-window.TRANSACTIONS = TRANSACTIONS;
-window.MEDIA = MEDIA;
-window.AREAS = AREAS;
 window.svgPlaceholder = svgPlaceholder;

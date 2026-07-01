@@ -1,14 +1,12 @@
 /* ============================================================================
-   main.js — site-wide behavior (2.0)
+   main.js — site-wide behavior
    ----------------------------------------------------------------------------
    • Header scroll state + accessible mobile menu + active nav link
    • Scroll reveals (IntersectionObserver, respects reduced motion)
    • Dynamic NAP injection from SITE
-   • Animated counters (factual stats)
-   • Renderers: featured properties, portfolio (transactions), media gallery
-   • Properties grid + live filters; home search routing
+   • Featured properties renderer + Properties grid/filters (shared)
    • Forms: validation, success state, payload log, endpoint stub
-   Depends on data.js (SITE, STATS, PROPERTIES, TRANSACTIONS, MEDIA).
+   Depends on data.js (SITE, PROPERTIES).
    ========================================================================== */
 
 (function () {
@@ -95,41 +93,7 @@
     $$('[data-year]').forEach((el) => (el.textContent = new Date().getFullYear()));
   }
 
-  /* 5) COUNTERS ----------------------------------------------------------- */
-  function renderStats() {
-    const grid = $('#stats-grid');
-    if (!grid || !window.STATS) return;
-    grid.innerHTML = STATS.map((s, i) => `
-      <div class="stat" data-reveal data-reveal-delay="${Math.min(i, 4)}">
-        <div class="stat__num"><span data-counter="${s.value}">0</span><span class="suffix">${s.suffix || ''}</span></div>
-        <div class="stat__label">${s.label}</div>
-      </div>`).join('');
-  }
-  function initCounters() {
-    const nums = $$('[data-counter]');
-    if (!nums.length) return;
-    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
-      nums.forEach((el) => (el.textContent = el.getAttribute('data-counter')));
-      return;
-    }
-    const run = (el) => {
-      const target = Number(el.getAttribute('data-counter')) || 0;
-      const dur = 1400, start = performance.now();
-      const tick = (now) => {
-        const p = Math.min((now - start) / dur, 1);
-        const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
-        el.textContent = Math.round(eased * target).toLocaleString();
-        if (p < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    };
-    const io = new IntersectionObserver((entries, obs) => {
-      entries.forEach((e) => { if (e.isIntersecting) { run(e.target); obs.unobserve(e.target); } });
-    }, { threshold: 0.6 });
-    nums.forEach((el) => io.observe(el));
-  }
-
-  /* 6) PROPERTY CARD (shared) -------------------------------------------- */
+  /* 5) PROPERTY CARD (shared) -------------------------------------------- */
   function propertyCardHTML(p) {
     const specBits = p.type === 'Land'
       ? `<span class="spec">${ICONS.lot}<strong>${p.lot || '—'}</strong></span>
@@ -162,63 +126,7 @@
     grid.innerHTML = PROPERTIES.filter((p) => p.featured).map(propertyCardHTML).join('');
   }
 
-  /* 6b) AREAS SERVED (photo cards, deep-link into filtered listings) ----- */
-  function initAreas() {
-    const grid = $('#areas-grid');
-    if (!grid || !window.AREAS) return;
-    grid.innerHTML = AREAS.map((a, i) => {
-      const href = a.cityFilter ? `properties.html?city=${encodeURIComponent(a.cityFilter)}` : 'properties.html';
-      return `
-        <a class="card area-card" href="${href}" data-reveal data-reveal-delay="${Math.min(i, 4)}" aria-label="View properties in ${a.name}">
-          <div class="area-card__media">
-            <img class="area-card__img" src="${a.image}" alt="${a.name} neighborhood" loading="lazy" width="480" height="360">
-            <span class="area-card__tag">${a.tag}</span>
-            <span class="area-card__cap"><span class="n">${a.name}</span></span>
-          </div>
-          <div class="area-card__body">
-            <p class="area-card__blurb">${a.blurb}</p>
-            <span class="area-card__link">View listings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </div>
-        </a>`;
-    }).join('');
-  }
-
-  /* 7) PORTFOLIO (transactions) ----------------------------------------- */
-  function initPortfolio() {
-    const grid = $('#portfolio-grid');
-    if (!grid || !window.TRANSACTIONS) return;
-    grid.innerHTML = TRANSACTIONS.map((t, i) => `
-      <article class="card portfolio-card" data-reveal data-reveal-delay="${Math.min(i, 4)}">
-        <div class="portfolio-card__media">
-          <img class="portfolio-card__img" src="${t.image}" alt="${t.type} in ${t.location}" loading="lazy" width="600" height="375">
-        </div>
-        <div class="portfolio-card__body">
-          <div class="portfolio-card__meta">
-            <span class="tag tag--status">${t.status}</span>
-            <span class="tag tag--type">${t.type}</span>
-            <span class="tag">${t.location}</span>
-          </div>
-          <h3>${t.type} · ${t.location}</h3>
-          <p class="portfolio-card__story">${t.story}</p>
-          <div class="portfolio-card__service">${ICONS.check} ${t.service}</div>
-        </div>
-      </article>`).join('');
-  }
-
-  /* 8) MEDIA GALLERY ----------------------------------------------------- */
-  function initMedia() {
-    const grid = $('#media-grid');
-    if (!grid || !window.MEDIA) return;
-    const spans = ['media-tile--lg', 'media-tile--w', 'media-tile--w', 'media-tile--sq', 'media-tile--sq', 'media-tile--sq'];
-    grid.innerHTML = MEDIA.map((m, i) => `
-      <figure class="media-tile ${spans[i] || 'media-tile--sq'}" data-reveal data-reveal-delay="${Math.min(i, 4)}">
-        <img src="${m.image}" alt="${m.label}" loading="lazy">
-        ${m.type === 'video' ? `<span class="media-tile__play" aria-hidden="true"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></span>` : ''}
-        <figcaption class="media-tile__cap"><span class="t">${m.tag}</span><span class="l">${m.label}</span></figcaption>
-      </figure>`).join('');
-  }
-
-  /* 9) PROPERTIES PAGE: grid + filters ----------------------------------- */
+  /* 6) PROPERTIES PAGE: grid + filters ------------------------------------ */
   function initPropertiesPage() {
     const grid = $('#properties-grid');
     if (!grid || !window.PROPERTIES) return;
@@ -265,25 +173,7 @@
     apply();
   }
 
-  /* 10) HOME SEARCH CARD ------------------------------------------------- */
-  function initHomeSearch() {
-    const form = $('#home-search');
-    if (!form || !window.PROPERTIES) return;
-    const citySel = $('#hs-city', form), typeSel = $('#hs-type', form);
-    if (citySel) citySel.innerHTML = '<option value="">Any city</option>' + [...new Set(PROPERTIES.map((p) => p.city))].sort().map((c) => `<option value="${c}">${c}</option>`).join('');
-    if (typeSel) typeSel.innerHTML = '<option value="">Any type</option>' + [...new Set(PROPERTIES.map((p) => p.type))].sort().map((t) => `<option value="${t}">${t}</option>`).join('');
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const params = new URLSearchParams();
-      const q = $('#hs-q', form)?.value.trim();
-      if (q) params.set('q', q);
-      if (citySel?.value) params.set('city', citySel.value);
-      if (typeSel?.value) params.set('type', typeSel.value);
-      location.href = 'properties.html' + (params.toString() ? `?${params}` : '');
-    });
-  }
-
-  /* 11) FORMS ------------------------------------------------------------ */
+  /* 7) FORMS --------------------------------------------------------------- */
   function initForms() {
     $$('form[data-form]').forEach((form) => {
       const successEl = form.querySelector('.form-success');
@@ -336,16 +226,10 @@
     initHeader();
     initActiveNav();
     initSiteData();
-    renderStats();
     initFeatured();
-    initAreas();
-    initPortfolio();
-    initMedia();
-    initHomeSearch();
     initPropertiesPage();
     initForms();
     initReveals();
-    initCounters();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
