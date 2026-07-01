@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#102A4E">
+  <meta name="theme-color" content="#2B1B12">
 
   <title>Shakeel Ahmad Realtor · NYC, Rochester &amp; Upstate NY Real Estate</title>
   <meta name="description" content="Shakeel Ahmad — Licensed NY Real Estate Salesperson with Platinum Properties. Buy, sell, and navigate probate &amp; estate sales across NYC, Rochester and Upstate New York. Schedule a consultation.">
@@ -66,7 +66,7 @@
   <a class="skip-link" href="#main">Skip to content</a>
 
   <!-- ============================= HEADER ============================= -->
-  <header class="site-header">
+  <header class="site-header on-hero">
     <div class="container">
       <a class="brand" href="index.html" aria-label="Shakeel Ahmad Realtor — home">
         <span class="brand__seal" aria-hidden="true">SA</span>
@@ -91,7 +91,7 @@
         <div class="hero__grid">
           <div>
             <p class="eyebrow" data-hero="1">NYC · Rochester · Upstate New York</p>
-            <h1 data-hero="2">Let’s find the right <span class="accent">home</span>, or the right <span class="accent-gold">buyer</span>.</h1>
+            <h1 data-hero="2">More than an agent — your <span class="accent-gold">advocate</span>.</h1>
             <p class="hero__sub" data-hero="3">I’m Shakeel Ahmad, a licensed New York salesperson with Platinum Properties — helping buyers and sellers move with confidence, and a specialty in probate &amp; estate sales.</p>
 
             <!-- Primary Buy / Sell paths (large, thumb-friendly) -->
@@ -109,8 +109,8 @@
             </div>
 
             <div class="hero__ctas" data-hero="5">
-              <a class="btn btn--gold" href="#contact">Schedule Consultation</a>
-              <a class="btn btn--outline" href="#contact">Contact Me</a>
+              <a class="btn btn--cream btn--lg" href="#contact">Schedule Consultation</a>
+              <a class="btn btn--outline on-dark" href="#contact">Contact Me</a>
             </div>
             <div class="hero__trust" data-hero="5">
               <span><span class="dot"></span>NYS License #10401314142</span>
@@ -121,11 +121,22 @@
 
           <!-- Personal photo hero: Shakeel's real headshot is the primary visual -->
           <div class="hero__art" data-hero="3">
-            <div class="hero__photo-card">
-              <img src="assets/img/shakeel-ahmad.jpg" alt="Shakeel Ahmad, Licensed Real Estate Salesperson with Platinum Properties" loading="eager" width="877" height="1024">
-              <span class="hero__photo-caption">
-                <span class="n">Shakeel Ahmad</span>
-                <span class="r">Licensed Real Estate Salesperson</span>
+            <div class="hero__photo-wrap">
+              <div class="hero__photo-card arch-frame">
+                <img src="assets/img/shakeel-ahmad.jpg" alt="Shakeel Ahmad, Licensed Real Estate Salesperson with Platinum Properties" loading="eager" width="877" height="1024">
+                <span class="hero__photo-caption">
+                  <span class="n">Shakeel Ahmad</span>
+                  <span class="r">Licensed Real Estate Salesperson</span>
+                </span>
+              </div>
+              <!-- Floating listing preview (sample — matches a real PROPERTIES entry) -->
+              <span class="hero__listing-peek" aria-hidden="true">
+                <span class="lp-badge">Sample</span>
+                <span class="lp-thumb"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-7 9 7M5 9v11h14V9M9 20v-6h6v6"/></svg></span>
+                <span>
+                  <span class="lp-price">$539,000</span>
+                  <span class="lp-addr">184 Edgemere Drive<br>Greece, NY</span>
+                </span>
               </span>
             </div>
             <!-- floating glass trust badges -->
@@ -142,30 +153,63 @@
       </div>
     </section>
 
-    <!-- ============================= STATS ============================= -->
-    <section class="section section--tight">
+    <!-- ==================== SERVICE PATHS (arch cards) ================== -->
+    <section class="section section--tight category-section" aria-labelledby="exp-h">
       <div class="container">
-        <!-- Counters render from STATS (factual only) -->
-        <div class="stats" id="stats-grid"></div>
+        <div class="section-head center" data-reveal>
+          <p class="eyebrow center">01 — How I can help</p>
+          <h2 id="exp-h">Buy, sell, or navigate an estate.</h2>
+        </div>
+        <div class="category-grid">
+          <a class="category-arch" href="properties.html" data-reveal>
+            <div class="category-arch__photo arch-top ph-buy">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"><path d="m3 11 9-7 9 7M5 9v11h14V9M9 20v-6h6v6"/></svg>
+              <span class="category-arch__label">Buy a Home</span>
+            </div>
+            <p class="category-arch__desc">From search strategy to negotiation and inspections, I help you find the right home and win it on the right terms.</p>
+            <span class="category-arch__link">Start your search <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="category-arch" href="buyers-sellers.html#seller-form" data-reveal data-reveal-delay="1">
+            <div class="category-arch__photo arch-top ph-sell">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span class="category-arch__label">Sell My Home</span>
+            </div>
+            <p class="category-arch__desc">Pricing, preparation and marketing that present your property at its best — with clear communication at every step.</p>
+            <span class="category-arch__link">Get a valuation <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="category-arch" href="buyers-sellers.html" data-reveal data-reveal-delay="2">
+            <div class="category-arch__photo arch-top ph-probate">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"><path d="M9 12h6M9 16h6M9 8h2M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/></svg>
+              <span class="category-arch__label">Probate &amp; Estate</span>
+            </div>
+            <p class="category-arch__desc">Compassionate, organized guidance for estate and time-sensitive sales — coordinating with attorneys and families.</p>
+            <span class="category-arch__link">Learn more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </div>
       </div>
     </section>
 
     <!-- =========================== ABOUT/BIO =========================== -->
-    <section class="section section--gray" aria-labelledby="about-h" id="about">
+    <section class="section section--navy" aria-labelledby="about-h" id="about">
       <div class="container">
         <div class="grid grid-2" style="align-items:center; gap:clamp(2rem,5vw,4rem)">
           <div data-reveal>
-            <img src="assets/img/shakeel-ahmad.jpg" alt="Shakeel Ahmad, Licensed Real Estate Salesperson with Platinum Properties" loading="lazy" width="877" height="1024" style="width:100%; max-width:440px; border-radius:var(--r-lg); box-shadow:var(--shadow-md)">
+            <div class="about-photo arch-frame">
+              <img src="assets/img/shakeel-ahmad.jpg" alt="Shakeel Ahmad, Licensed Real Estate Salesperson with Platinum Properties" loading="lazy" width="877" height="1024">
+            </div>
           </div>
           <div data-reveal data-reveal-delay="1">
-            <p class="eyebrow">01 — About Shakeel</p>
+            <p class="eyebrow on-dark">02 — About Shakeel</p>
             <h2 id="about-h">A trusted advisor for life’s biggest moves.</h2>
             <p class="text-soft">Whether you’re buying your first home, selling a family property, or managing an estate during a difficult time, you deserve a steady, communicative partner. I bring local market knowledge, honest guidance, and a calm process from first showing to closing.</p>
             <p class="text-soft">Based in Greece, NY with Platinum Properties, I serve clients across NYC, Rochester, Monroe County, the Finger Lakes and Upstate New York.</p>
 
-            <div style="margin-top:1.6rem"><a class="btn btn--outline" href="#contact">Book a Consultation</a></div>
+            <div style="margin-top:1.6rem"><a class="btn btn--gold" href="#contact">Book a Consultation</a></div>
           </div>
         </div>
+
+        <!-- Counters render from STATS (factual only) -->
+        <div class="stats" id="stats-grid" style="margin-top:clamp(2.5rem,5vw,4rem)"></div>
       </div>
     </section>
 
@@ -174,41 +218,13 @@
       <div class="container">
         <div class="results-meta" data-reveal>
           <div>
-            <p class="eyebrow">02 — Areas Served</p>
+            <p class="eyebrow">03 — Areas Served</p>
             <h2 id="areas-h">Where I work</h2>
           </div>
         </div>
         <!-- Area cards render from AREAS -->
         <div class="areas-grid" id="areas-grid"></div>
         <p class="note-italic" style="margin-top:1.2rem">Also serving Monroe County, the Finger Lakes and Upstate New York.</p>
-      </div>
-    </section>
-
-    <!-- =========================== EXPERIENCE ========================== -->
-    <section class="section" aria-labelledby="exp-h">
-      <div class="container">
-        <div class="section-head" data-reveal>
-          <p class="eyebrow">03 — Experience</p>
-          <h2 id="exp-h">Full-service representation, tailored to you</h2>
-          <p class="lede">Focused expertise across the moments that matter most.</p>
-        </div>
-        <div class="grid grid-3">
-          <article class="card feature-card" data-reveal>
-            <div class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"><path d="m3 11 9-7 9 7M5 9v11h14V9M9 20v-6h6v6"/></svg></div>
-            <span class="num">01</span><h3>Buying</h3>
-            <p class="text-soft">From search strategy to negotiation and inspections, I help you find the right home and win it on the right terms.</p>
-          </article>
-          <article class="card feature-card" data-reveal data-reveal-delay="1">
-            <div class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-            <span class="num">02</span><h3>Selling</h3>
-            <p class="text-soft">Pricing, preparation and marketing that present your property at its best — with clear communication at every step.</p>
-          </article>
-          <article class="card feature-card" data-reveal data-reveal-delay="2">
-            <div class="feature-icon gold" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"><path d="M9 12h6M9 16h6M9 8h2M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/></svg></div>
-            <span class="num">03</span><h3>Probate &amp; Estate</h3>
-            <p class="text-soft">Compassionate, organized guidance for estate and time-sensitive sales — coordinating with attorneys and families.</p>
-          </article>
-        </div>
       </div>
     </section>
 
