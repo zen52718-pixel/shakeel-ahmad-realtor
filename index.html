@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#2B1B12">
 
   <title>Shakeel Ahmad Realtor · NYC, Rochester &amp; Upstate NY Real Estate</title>
-  <meta name="description" content="Shakeel Ahmad — Licensed NY Real Estate Salesperson with Platinum Properties. Buy, sell, and navigate probate &amp; estate sales across NYC, Rochester and Upstate New York. Book a consultation.">
+  <meta name="description" content="Shakeel Ahmad — Licensed NY Real Estate Salesperson with Platinum Properties. Buy, sell, and navigate probate &amp; estate sales across NYC, Rochester and Upstate New York. Schedule a consultation.">
   <link rel="canonical" href="https://www.shakeelahmadrealtor.com/">
 
   <meta property="og:type" content="website">
@@ -45,7 +45,7 @@
       "postalCode": "14612",
       "addressCountry": "US"
     },
-    "areaServed": ["New York City", "Rochester, NY", "Upstate New York"],
+    "areaServed": ["New York City", "Rochester, NY", "Monroe County, NY", "Webster, NY", "Penfield, NY", "Pittsford, NY", "Finger Lakes, NY", "Upstate New York"],
     "openingHoursSpecification": [{
       "@type": "OpeningHoursSpecification",
       "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
@@ -75,9 +75,8 @@
       <nav class="nav" id="primary-nav" aria-label="Primary">
         <a class="nav__link" href="index.html">Home</a>
         <a class="nav__link" href="properties.html">Properties</a>
-        <a class="nav__link" href="index.html#about">About</a>
-        <a class="nav__link" href="contact.html">Contact</a>
-        <span class="nav__cta"><a class="btn btn--primary btn--sm" href="contact.html">Get a Valuation</a></span>
+        <a class="nav__link" href="buyers-sellers.html">Buyers &amp; Sellers</a>
+        <span class="nav__cta"><a class="btn btn--primary btn--sm" href="#contact">Contact</a></span>
       </nav>
       <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="primary-nav">
         <span class="nav-toggle__bar"></span><span class="nav-toggle__bar"></span><span class="nav-toggle__bar"></span>
@@ -91,29 +90,69 @@
       <div class="container">
         <div class="hero__grid">
           <div>
-            <h1 data-hero="1">Buy or Sell with Confidence in <span class="accent-gold">NYC, Rochester &amp; Upstate New York</span></h1>
-            <p class="hero__sub" data-hero="2">I’m Shakeel Ahmad, a licensed New York real estate agent with Platinum Properties — helping you buy, sell, or navigate a probate sale with clear, honest guidance.</p>
-            <div class="hero__ctas" data-hero="3">
-              <a class="btn btn--primary btn--lg" href="properties.html">View Properties</a>
-              <a class="btn btn--cream btn--lg" href="#contact">Book a Consultation</a>
+            <p class="eyebrow" data-hero="1">Buying · Selling · Probate &amp; Estate Sales</p>
+            <h1 data-hero="2">Your Real Estate Agent for <span class="accent-gold">NYC, Rochester &amp; Upstate New York</span></h1>
+            <p class="hero__sub" data-hero="3">I’m Shakeel Ahmad, a licensed New York salesperson with Platinum Properties. Whether you’re buying, selling, or navigating a probate sale, I serve Greece, Rochester, Monroe County, Webster, Penfield, Pittsford, the Finger Lakes and Upstate New York.</p>
+
+            <!-- Primary Buy / Sell paths (large, thumb-friendly) -->
+            <div class="hero__buysell" data-hero="4">
+              <a class="buysell-btn buysell-btn--buy" href="properties.html">
+                <span class="bs-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-7 9 7M5 9v11h14V9M9 20v-6h6v6"/></svg></span>
+                <span class="bs-label">Buy<small>Find your next home</small></span>
+                <svg class="bs-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+              <a class="buysell-btn buysell-btn--sell" href="buyers-sellers.html#seller-form">
+                <span class="bs-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+                <span class="bs-label">Sell<small>Get a home valuation</small></span>
+                <svg class="bs-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+            </div>
+
+            <div class="hero__ctas" data-hero="5">
+              <a class="btn btn--cream btn--lg" href="#contact">Schedule Consultation</a>
+              <a class="btn btn--outline on-dark" href="#contact">Contact Me</a>
+            </div>
+            <div class="hero__trust" data-hero="5">
+              <span><span class="dot"></span>NYS License #10401314142</span>
+              <span><span class="dot"></span>Probate &amp; Estate Specialist</span>
+              <span><span class="dot"></span>Mon–Sat, 8AM–8PM</span>
             </div>
           </div>
 
           <!-- Personal photo hero: Shakeel's real cutout photo floats over the gradient -->
-          <div class="hero__art" data-hero="4">
+          <div class="hero__art" data-hero="3">
             <div class="hero__cutout">
               <img src="assets/img/shakeel-hero-clipboard.png" alt="Shakeel Ahmad, Licensed Real Estate Salesperson with Platinum Properties" loading="eager" width="477" height="523">
+            </div>
+            <!-- Floating listing preview (sample — matches a real PROPERTIES entry) -->
+            <span class="hero__listing-peek" aria-hidden="true">
+              <span class="lp-badge">Sample</span>
+              <span class="lp-thumb"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-7 9 7M5 9v11h14V9M9 20v-6h6v6"/></svg></span>
+              <span>
+                <span class="lp-price">$539,000</span>
+                <span class="lp-addr">184 Edgemere Drive<br>Greece, NY</span>
+              </span>
+            </span>
+            <!-- floating glass trust badges -->
+            <div class="art-badge art-badge--tl" aria-hidden="true">
+              <span class="ico gold"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.4 7.7 8 10 4.6-2.3 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg></span>
+              <span>Licensed in NY<small>#10401314142</small></span>
+            </div>
+            <div class="art-badge art-badge--br" aria-hidden="true">
+              <span class="ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg></span>
+              <span>Probate &amp; Estate<small>Specialist</small></span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- =========================== SERVICES ============================= -->
-    <section class="section section--tight category-section">
+    <!-- ==================== SERVICE PATHS (arch cards) ================== -->
+    <section class="section section--tight category-section" aria-labelledby="exp-h">
       <div class="container">
         <div class="section-head center" data-reveal>
-          <p class="eyebrow center">How I Can Help</p>
+          <p class="eyebrow center">01 — How I can help</p>
+          <h2 id="exp-h">Buy, sell, or navigate an estate.</h2>
         </div>
         <div class="category-grid">
           <a class="category-arch" href="properties.html" data-reveal>
@@ -121,21 +160,24 @@
               <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"><path d="m3 11 9-7 9 7M5 9v11h14V9M9 20v-6h6v6"/></svg>
               <span class="category-arch__label">Buy a Home</span>
             </div>
-            <p class="category-arch__desc">From your first search to closing day, I’ll help you find the right home and negotiate the best terms.</p>
+            <p class="category-arch__desc">From search strategy to negotiation and inspections, I help you find the right home and win it on the right terms.</p>
+            <span class="category-arch__link">Start your search <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
-          <a class="category-arch" href="contact.html" data-reveal data-reveal-delay="1">
+          <a class="category-arch" href="buyers-sellers.html#seller-form" data-reveal data-reveal-delay="1">
             <div class="category-arch__photo arch-top ph-sell">
               <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              <span class="category-arch__label">Sell Your Home</span>
+              <span class="category-arch__label">Sell My Home</span>
             </div>
-            <p class="category-arch__desc">Strategic pricing and marketing to help you sell for top value — including sensitive probate &amp; estate sales.</p>
+            <p class="category-arch__desc">Pricing, preparation and marketing that present your property at its best — with clear communication at every step.</p>
+            <span class="category-arch__link">Get a valuation <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
-          <a class="category-arch" href="#contact" data-reveal data-reveal-delay="2">
+          <a class="category-arch" href="buyers-sellers.html" data-reveal data-reveal-delay="2">
             <div class="category-arch__photo arch-top ph-probate">
-              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"><path d="M8 10h8M8 14h5M21 12a9 9 0 1 1-9-9c2 0 4 .8 5.5 2"/><path d="m17 3 3 3-3 3"/></svg>
-              <span class="category-arch__label">Real Estate Consultation</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"><path d="M9 12h6M9 16h6M9 8h2M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/></svg>
+              <span class="category-arch__label">Probate &amp; Estate</span>
             </div>
-            <p class="category-arch__desc">Not sure where to start? Book a free, no-obligation consultation to talk through your goals and options.</p>
+            <p class="category-arch__desc">Compassionate, organized guidance for estate and time-sensitive sales — coordinating with attorneys and families.</p>
+            <span class="category-arch__link">Learn more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
         </div>
       </div>
@@ -151,17 +193,48 @@
             </div>
           </div>
           <div data-reveal data-reveal-delay="1">
-            <p class="eyebrow on-dark">About Shakeel</p>
+            <p class="eyebrow on-dark">02 — About Shakeel</p>
             <h2 id="about-h">A trusted advisor for life’s biggest moves.</h2>
-            <p class="text-soft">I’m Shakeel Ahmad, a licensed New York real estate salesperson with Platinum Properties, based in Greece, NY. I help buyers find the right home, sellers get top value with less stress, and families navigate probate and estate sales with care. My approach is simple: honest advice, clear communication, and a calm process from first call to closing. When you work with me, you get a steady partner who treats your move like it’s my own.</p>
-            <div class="areas" style="margin-top:1.2rem">
-              <span class="area-chip">New York City</span>
-              <span class="area-chip">Rochester</span>
-              <span class="area-chip">Upstate New York</span>
-            </div>
+            <p class="text-soft">Whether you’re buying your first home, selling a family property, or managing an estate during a difficult time, you deserve a steady, communicative partner. I bring local market knowledge, honest guidance, and a calm process from first showing to closing.</p>
+            <p class="text-soft">Based in Greece, NY with Platinum Properties, I serve clients across NYC, Rochester, Monroe County, the Finger Lakes and Upstate New York.</p>
+
             <div style="margin-top:1.6rem"><a class="btn btn--gold" href="#contact">Book a Consultation</a></div>
           </div>
         </div>
+
+        <!-- Counters render from STATS (factual only) -->
+        <div class="stats" id="stats-grid" style="margin-top:clamp(2.5rem,5vw,4rem)"></div>
+      </div>
+    </section>
+
+    <!-- ========================== AREAS SERVED ========================== -->
+    <section class="section" aria-labelledby="areas-h">
+      <div class="container">
+        <div class="results-meta" data-reveal>
+          <div>
+            <p class="eyebrow">03 — Areas Served</p>
+            <h2 id="areas-h">Where I work</h2>
+          </div>
+        </div>
+        <!-- Area cards render from AREAS -->
+        <div class="areas-grid" id="areas-grid"></div>
+        <p class="note-italic" style="margin-top:1.2rem">Also serving Monroe County, the Finger Lakes and Upstate New York.</p>
+      </div>
+    </section>
+
+    <!-- =========================== PORTFOLIO =========================== -->
+    <section class="section section--gray" aria-labelledby="portfolio-h">
+      <div class="container">
+        <div class="results-meta" data-reveal>
+          <div>
+            <p class="eyebrow">04 — Portfolio</p>
+            <h2 id="portfolio-h">Recent representative transactions</h2>
+          </div>
+          <a class="btn btn--outline" href="properties.html">View current listings</a>
+        </div>
+        <!-- Portfolio cards render from TRANSACTIONS -->
+        <div class="grid grid-3" id="portfolio-grid"></div>
+        <p class="note-italic" style="margin-top:1.5rem"><em>Representative examples illustrating the type of work and service provided — not a complete or audited transaction record. No fabricated figures or reviews.</em></p>
       </div>
     </section>
 
@@ -169,45 +242,37 @@
     <section class="section" aria-labelledby="featured-h">
       <div class="container">
         <div class="results-meta" data-reveal>
-          <div><p class="eyebrow">Featured Listings</p><h2 id="featured-h">Homes on the market</h2></div>
+          <div><p class="eyebrow">05 — Featured Listings</p><h2 id="featured-h">Homes on the market</h2></div>
+          <a class="btn btn--outline" href="properties.html">Browse all properties</a>
         </div>
         <div class="grid grid-3" id="featured-grid"></div>
-        <div class="center" style="margin-top:2rem"><a class="btn btn--outline" href="properties.html">View All Properties</a></div>
+        <p class="note-italic" style="margin-top:1.5rem">Sample listings shown for demonstration — replace with live MLS data before launch.</p>
       </div>
     </section>
 
-    <!-- ============================== FAQ =============================== -->
-    <section class="section section--gray" aria-labelledby="faq-h">
-      <div class="container narrow">
-        <div class="section-head center" data-reveal>
-          <p class="eyebrow center">FAQ</p>
-          <h2 id="faq-h">Common questions</h2>
+    <!-- ============================= MEDIA ============================= -->
+    <section class="section section--gray" aria-labelledby="media-h">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">06 — Media</p>
+          <h2 id="media-h">An active, professional presence</h2>
+          <p class="lede">Headshots, listings, open houses, community events and video — a look at the work in motion.</p>
         </div>
-        <div class="faq-list" data-reveal>
-          <details class="faq-item">
-            <summary>Which areas do you serve?<span class="faq-item__icon" aria-hidden="true"></span></summary>
-            <p>I work across New York City, Rochester, and Upstate New York, including Monroe County, Webster, Penfield, Pittsford and the Finger Lakes.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Do you help first-time home sellers?<span class="faq-item__icon" aria-hidden="true"></span></summary>
-            <p>Yes — I walk first-time sellers through pricing, preparation and marketing so the process feels clear and manageable from start to finish.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Can you help sell my property quickly?<span class="faq-item__icon" aria-hidden="true"></span></summary>
-            <p>Yes. I price strategically and market aggressively to attract qualified buyers fast, including for time-sensitive probate and estate sales.</p>
-          </details>
-          <details class="faq-item">
-            <summary>How do I request a home valuation?<span class="faq-item__icon" aria-hidden="true"></span></summary>
-            <p>Fill out the home valuation form on the <a class="link-arrow" href="contact.html">Contact page</a> with your property details, and I’ll follow up with a market analysis.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Do you work in Rochester, NYC, and Upstate New York?<span class="faq-item__icon" aria-hidden="true"></span></summary>
-            <p>Yes — those are my primary markets, along with Monroe County, Webster, Penfield, Pittsford and the Finger Lakes.</p>
-          </details>
-          <details class="faq-item">
-            <summary>How do I schedule a consultation?<span class="faq-item__icon" aria-hidden="true"></span></summary>
-            <p>Use the contact form below, or call or text me directly at (718) 696-9245.</p>
-          </details>
+        <!-- Media tiles render from MEDIA -->
+        <div class="media-grid" id="media-grid"></div>
+        <p class="note-italic" style="margin-top:1.2rem">Placeholders shown — swap in real photos and video thumbnails before launch.</p>
+      </div>
+    </section>
+
+    <!-- ========================= REVIEWS STRIP ========================= -->
+    <section class="section section--tight center" aria-labelledby="reviews-h">
+      <div class="container narrow">
+        <p class="eyebrow center">07 — Reviews</p>
+        <h2 id="reviews-h">See what clients say — in their own words</h2>
+        <p class="lede mx-auto">Read verified reviews on my Zillow and Google profiles.</p>
+        <div class="trust-strip" data-reveal style="justify-content:center; margin-top:1.5rem">
+          <a class="trust-pill" href="https://www.zillow.com/profile/Shakeel%20Ahmad" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-7 9 7M5 9v11h14V9"/></svg> Read my reviews on Zillow</a>
+          <a class="trust-pill" href="https://share.google/ZrAXRv1uQOXXVJiJa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold-dark)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg> Reviews on Google</a>
         </div>
       </div>
     </section>
@@ -217,24 +282,35 @@
       <div class="container">
         <div class="grid grid-2" style="gap:clamp(2rem,5vw,4rem); align-items:center">
           <div data-reveal>
-            <p class="eyebrow on-dark">Contact</p>
+            <p class="eyebrow on-dark">08 — Contact</p>
             <h2 id="contact-h">Let’s talk about your next move</h2>
-            <div class="contact-list" style="margin-top:1.2rem; font-size:1.05rem">
+            <p class="lede">Book a no-pressure consultation, or reach out directly — I respond six days a week, 8 AM to 8 PM.</p>
+            <div class="contact-list" style="margin-top:1.4rem; font-size:1.05rem">
               <a href="tel:+17186969245" style="color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold-light)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.4 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg> Call / text (718) 696-9245</a>
               <a href="mailto:info@shakeelahmadrealtor.com" style="color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold-light)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg> info@shakeelahmadrealtor.com</a>
             </div>
+            <p class="text-soft" style="margin-top:1rem">2270 Latta Road, Greece, NY 14612 · Platinum Properties · NYS License #10401314142</p>
           </div>
 
-          <!-- Homepage lead form — Name, Phone, Email, Message only -->
+          <!-- Short homepage lead form -->
           <div class="card form-card form-card--accent" data-reveal data-reveal-delay="1">
-            <h3 style="margin-bottom:1rem">Send a Message</h3>
+            <h3 style="margin-bottom:1rem">Book a Consultation</h3>
             <form class="form" data-form="home-lead" novalidate>
               <div class="form-body" style="display:grid; gap:1.1rem">
-                <div class="field-group"><label for="h-name">Full name</label><input id="h-name" name="name" type="text" required autocomplete="name" placeholder="Your name"><span class="error-msg">Please enter your name.</span></div>
-                <div class="field-group"><label for="h-phone">Phone</label><input id="h-phone" name="phone" type="tel" required autocomplete="tel" placeholder="(555) 555-5555"><span class="error-msg">Please enter your phone.</span></div>
+                <div class="form-row">
+                  <div class="field-group"><label for="h-name">Full name</label><input id="h-name" name="name" type="text" required autocomplete="name" placeholder="Your name"><span class="error-msg">Please enter your name.</span></div>
+                  <div class="field-group"><label for="h-phone">Phone</label><input id="h-phone" name="phone" type="tel" required autocomplete="tel" placeholder="(555) 555-5555"><span class="error-msg">Please enter your phone.</span></div>
+                </div>
                 <div class="field-group"><label for="h-email">Email</label><input id="h-email" name="email" type="email" required autocomplete="email" placeholder="you@email.com"><span class="error-msg">Please enter a valid email.</span></div>
-                <div class="field-group"><label for="h-msg">Message</label><textarea id="h-msg" name="message" required placeholder="Tell me a little about your goals…" style="min-height:100px"></textarea><span class="error-msg">Please add a short message.</span></div>
-                <button class="btn btn--gold btn--block" type="submit">Send Message</button>
+                <div class="field-group"><label for="h-intent">I’m interested in</label>
+                  <select id="h-intent" name="intent" required>
+                    <option value="">Select one…</option>
+                    <option>Buying a home</option><option>Selling a home</option><option>Probate / estate sale</option><option>General question</option>
+                  </select><span class="error-msg">Please choose an option.</span>
+                </div>
+                <div class="field-group"><label for="h-msg">Message</label><textarea id="h-msg" name="message" required placeholder="Tell me a little about your timeline or goals…" style="min-height:100px"></textarea><span class="error-msg">Please add a short message.</span></div>
+                <button class="btn btn--gold btn--block" type="submit">Request My Consultation</button>
+                <p class="note-italic" style="font-size:.82rem">By submitting you agree to be contacted about your inquiry.</p>
               </div>
               <div class="form-success" role="status" aria-live="polite">
                 <div class="form-success__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg></div>
@@ -249,6 +325,7 @@
   </main>
 
   <!-- ============================= FOOTER ============================= -->
+  <!--#footer-->
   <footer class="site-footer">
     <div class="container">
       <div class="footer-grid">
@@ -257,13 +334,13 @@
             <span class="brand__seal" aria-hidden="true">SA</span>
             <span><span class="brand__name">Shakeel Ahmad</span><span class="brand__role">Licensed Real Estate Salesperson</span></span>
           </a>
-          <p class="text-soft" style="margin-top:1rem; max-width:34ch">Premium, honest real estate guidance across NYC, Rochester &amp; Upstate New York.</p>
+          <p class="text-soft" style="margin-top:1rem; max-width:34ch">Premium, honest real estate guidance across NYC, Rochester &amp; Upstate New York — with a specialty in probate and estate sales.</p>
           <div class="social-row">
             <a class="social-link" href="https://www.facebook.com/ShakeelAhmadRealtor/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12Z"/></svg></a>
             <a class="social-link" href="https://www.linkedin.com/in/shakeel-ahmad-055b8881/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5ZM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21h-4z"/></svg></a>
             <a class="social-link" href="https://www.instagram.com/shakeelahmadrealtor/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.1.4.3 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.1-1 .3-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.3-2.2-.4a3.8 3.8 0 0 1-1.4-.9 3.8 3.8 0 0 1-.9-1.4c-.1-.4-.3-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.1 1-.3 2.2-.4C8.4 2.2 8.8 2.2 12 2.2Zm0 5a4.9 4.9 0 1 0 0 9.8 4.9 4.9 0 0 0 0-9.8Zm0 1.8a3.1 3.1 0 1 1 0 6.2 3.1 3.1 0 0 1 0-6.2Zm5.1-2.5a1.1 1.1 0 1 0 0 2.3 1.1 1.1 0 0 0 0-2.3Z"/></svg></a>
-            <a class="social-link" href="https://www.zillow.com/profile/Shakeel%20Ahmad" target="_blank" rel="noopener" aria-label="Zillow profile — reviews"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 2 9.5l2 2.5 8-6.2 8 6.2 2-2.5L12 2Zm0 6L5 13.4V21h4v-4h6v4h4v-7.6L12 8Z"/></svg></a>
-            <a class="social-link" href="https://share.google/ZrAXRv1uQOXXVJiJa" target="_blank" rel="noopener" aria-label="Google Business Profile — reviews"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.7h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3Zm-9.6 9.6c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.7-5.6-4.1H3.1v2.6A10 10 0 0 0 12 21.8Zm-5.6-7.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9l3.3-2.6Zm5.6-6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 12 2.2 10 10 0 0 0 3.1 7.5l3.3 2.6c.8-2.4 3-4.1 5.6-4.1Z"/></svg></a>
+            <a class="social-link" href="https://www.zillow.com/profile/Shakeel%20Ahmad" target="_blank" rel="noopener" aria-label="Zillow profile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 2 9.5l2 2.5 8-6.2 8 6.2 2-2.5L12 2Zm0 6L5 13.4V21h4v-4h6v4h4v-7.6L12 8Z"/></svg></a>
+            <a class="social-link" href="https://share.google/ZrAXRv1uQOXXVJiJa" target="_blank" rel="noopener" aria-label="Google Business Profile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.7h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3Zm-9.6 9.6c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.7-5.6-4.1H3.1v2.6A10 10 0 0 0 12 21.8Zm-5.6-7.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9l3.3-2.6Zm5.6-6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 12 2.2 10 10 0 0 0 3.1 7.5l3.3 2.6c.8-2.4 3-4.1 5.6-4.1Z"/></svg></a>
           </div>
         </div>
         <div class="footer-col">
@@ -271,24 +348,28 @@
           <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="properties.html">Properties</a></li>
-            <li><a href="index.html#about">About</a></li>
-            <li><a href="contact.html">Contact</a></li>
+            <li><a href="buyers-sellers.html">Buyers &amp; Sellers</a></li>
+            <li><a href="#contact">Contact</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>Areas Served</h4>
           <ul>
-            <li>New York City</li>
-            <li>Rochester</li>
-            <li>Upstate New York</li>
+            <li>NYC &amp; Relocation</li>
+            <li>Rochester &amp; Greece</li>
+            <li>Monroe County</li>
+            <li>Webster · Penfield · Pittsford</li>
+            <li>Finger Lakes · Upstate NY</li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>Contact</h4>
           <ul>
             <li><a href="tel:+17186969245">Cell / text · (718) 696-9245</a></li>
+            <li><a href="tel:+15854584250">Office · (585) 458-4250</a></li>
             <li><a href="mailto:info@shakeelahmadrealtor.com">info@shakeelahmadrealtor.com</a></li>
             <li>2270 Latta Road, Greece, NY 14612</li>
+            <li>Mon–Sat, 8:00 AM – 8:00 PM</li>
           </ul>
         </div>
       </div>
@@ -302,7 +383,7 @@
   <!-- ===================== STICKY MOBILE CTA BAR ===================== -->
   <nav class="mobile-cta" aria-label="Quick contact">
     <a href="tel:+17186969245" class="is-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.4 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg> Call Now</a>
-    <a href="contact.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg> Get Valuation</a>
+    <a href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg> Consultation</a>
   </nav>
 
   <script src="assets/js/data.js"></script>
