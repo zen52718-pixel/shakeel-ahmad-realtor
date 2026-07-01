@@ -316,10 +316,27 @@ const MEDIA = [
 ];
 
 
+/* ============================================================================
+   AREAS — flagship markets shown as photo cards on the Home hero-adjacent
+   "Areas Served" section. cityFilter must match a PROPERTIES `city` value to
+   deep-link into a filtered properties.html view; leave null for regional
+   areas with no single matching listing city (falls back to the full grid).
+   ========================================================================== */
+const AREAS = [
+  { name: 'NYC', tag: 'Relocation', blurb: 'Relocation & investment purchases to and from the city.', cityFilter: null, image: svgPlaceholder({ from: '#0B1E3A', to: '#3567B6', label: 'New York City' }) },
+  { name: 'Rochester', tag: 'City', blurb: 'Urban neighborhoods, condos and city living.', cityFilter: 'Rochester', image: svgPlaceholder({ from: '#102A4E', to: '#2D5BA8', label: 'Rochester, NY' }) },
+  { name: 'Greece', tag: 'Home Base', blurb: 'Lakefront homes and family neighborhoods near Lake Ontario.', cityFilter: 'Greece', image: svgPlaceholder({ from: '#14203A', to: '#27406E', label: 'Greece, NY' }) },
+  { name: 'Webster', tag: 'Suburban', blurb: 'Established communities and move-up estates.', cityFilter: 'Webster', image: svgPlaceholder({ from: '#1B2C4A', to: '#9B7C34', label: 'Webster, NY' }) },
+  { name: 'Penfield', tag: 'Family', blurb: 'Family-friendly streets and top-rated schools.', cityFilter: 'Penfield', image: svgPlaceholder({ from: '#0E2240', to: '#2D5BA8', label: 'Penfield, NY' }) },
+  { name: 'Pittsford', tag: 'Village', blurb: 'Village charm, the canal path and award-winning schools.', cityFilter: 'Pittsford', image: svgPlaceholder({ from: '#102A4E', to: '#5A78A8', label: 'Pittsford, NY' }) },
+];
+
+
 /* Expose to other scripts (plain globals — no module system / build step). */
 window.SITE = SITE;
 window.STATS = STATS;
 window.PROPERTIES = PROPERTIES;
 window.TRANSACTIONS = TRANSACTIONS;
 window.MEDIA = MEDIA;
+window.AREAS = AREAS;
 window.svgPlaceholder = svgPlaceholder;

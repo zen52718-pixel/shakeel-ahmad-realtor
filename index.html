@@ -91,11 +91,25 @@
         <div class="hero__grid">
           <div>
             <p class="eyebrow" data-hero="1">NYC · Rochester · Upstate New York</p>
-            <h1 data-hero="2">Real estate guidance you can <span class="accent">trust</span>, from first look to <span class="accent-gold">closing</span>.</h1>
+            <h1 data-hero="2">Let’s find the right <span class="accent">home</span>, or the right <span class="accent-gold">buyer</span>.</h1>
             <p class="hero__sub" data-hero="3">I’m Shakeel Ahmad, a licensed New York salesperson with Platinum Properties — helping buyers and sellers move with confidence, and a specialty in probate &amp; estate sales.</p>
-            <div class="hero__ctas" data-hero="4">
-              <a class="btn btn--gold btn--lg" href="#contact">Schedule Consultation</a>
-              <a class="btn btn--primary" href="properties.html">View Properties</a>
+
+            <!-- Primary Buy / Sell paths (large, thumb-friendly) -->
+            <div class="hero__buysell" data-hero="4">
+              <a class="buysell-btn buysell-btn--buy" href="properties.html">
+                <span class="bs-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-7 9 7M5 9v11h14V9M9 20v-6h6v6"/></svg></span>
+                <span class="bs-label">Buy<small>Find your next home</small></span>
+                <svg class="bs-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+              <a class="buysell-btn buysell-btn--sell" href="buyers-sellers.html#seller-form">
+                <span class="bs-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+                <span class="bs-label">Sell<small>Get a home valuation</small></span>
+                <svg class="bs-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+            </div>
+
+            <div class="hero__ctas" data-hero="5">
+              <a class="btn btn--gold" href="#contact">Schedule Consultation</a>
               <a class="btn btn--outline" href="#contact">Contact Me</a>
             </div>
             <div class="hero__trust" data-hero="5">
@@ -105,71 +119,14 @@
             </div>
           </div>
 
-          <!-- Custom animated architectural illustration (no stock photo) -->
+          <!-- Personal photo hero: Shakeel's real headshot is the primary visual -->
           <div class="hero__art" data-hero="3">
-            <div class="hero__art-card">
-              <svg class="hero-illustration" viewBox="0 0 560 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration of modern city buildings at sunrise">
-                <defs>
-                  <linearGradient id="bldA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1B3D6E"/><stop offset="1" stop-color="#102A4E"/></linearGradient>
-                  <linearGradient id="bldB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3567B6"/><stop offset="1" stop-color="#2D5BA8"/></linearGradient>
-                  <linearGradient id="bldC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E4CC8C"/><stop offset="1" stop-color="#C2A053"/></linearGradient>
-                </defs>
-
-                <!-- ground -->
-                <ellipse cx="280" cy="432" rx="250" ry="38" fill="#DEE7F2"/>
-
-                <!-- sun -->
-                <circle class="float-slow" cx="452" cy="112" r="44" fill="url(#bldC)"/>
-                <circle class="float-slow" cx="452" cy="112" r="44" fill="none" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="2"/>
-
-                <!-- clouds -->
-                <g class="float-mid" fill="#FFFFFF">
-                  <rect x="120" y="92" width="74" height="16" rx="8"/>
-                  <rect x="142" y="78" width="44" height="14" rx="7"/>
-                </g>
-
-                <!-- buildings -->
-                <rect x="150" y="130" width="100" height="300" rx="12" fill="url(#bldA)"/>
-                <rect x="258" y="192" width="86" height="238" rx="12" fill="url(#bldB)"/>
-                <rect x="352" y="250" width="74" height="180" rx="12" fill="url(#bldC)"/>
-                <rect x="92" y="300" width="66" height="130" rx="12" fill="url(#bldB)"/>
-
-                <!-- floor lines -->
-                <g stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="2">
-                  <line x1="150" y1="170" x2="250" y2="170"/><line x1="150" y1="210" x2="250" y2="210"/>
-                  <line x1="150" y1="250" x2="250" y2="250"/><line x1="150" y1="290" x2="250" y2="290"/>
-                  <line x1="150" y1="330" x2="250" y2="330"/><line x1="150" y1="370" x2="250" y2="370"/>
-                </g>
-
-                <!-- warm gold windows (building A) -->
-                <g fill="#E4CC8C">
-                  <rect x="166" y="150" width="14" height="12" rx="2"/><rect x="190" y="150" width="14" height="12" rx="2"/><rect x="214" y="150" width="14" height="12" rx="2"/>
-                  <rect x="166" y="230" width="14" height="12" rx="2"/><rect x="214" y="230" width="14" height="12" rx="2"/>
-                  <rect x="190" y="310" width="14" height="12" rx="2"/><rect x="214" y="310" width="14" height="12" rx="2"/>
-                  <rect x="166" y="350" width="14" height="12" rx="2"/>
-                </g>
-                <!-- light windows (building B) -->
-                <g fill="#FFFFFF" opacity="0.85">
-                  <rect x="272" y="212" width="13" height="11" rx="2"/><rect x="296" y="212" width="13" height="11" rx="2"/><rect x="320" y="212" width="13" height="11" rx="2"/>
-                  <rect x="272" y="250" width="13" height="11" rx="2"/><rect x="320" y="250" width="13" height="11" rx="2"/>
-                  <rect x="296" y="288" width="13" height="11" rx="2"/><rect x="320" y="288" width="13" height="11" rx="2"/>
-                  <rect x="272" y="326" width="13" height="11" rx="2"/><rect x="296" y="326" width="13" height="11" rx="2"/>
-                </g>
-                <!-- windows (building C, navy on gold) -->
-                <g fill="#102A4E" opacity="0.55">
-                  <rect x="366" y="272" width="13" height="11" rx="2"/><rect x="392" y="272" width="13" height="11" rx="2"/>
-                  <rect x="366" y="310" width="13" height="11" rx="2"/><rect x="392" y="310" width="13" height="11" rx="2"/>
-                  <rect x="392" y="348" width="13" height="11" rx="2"/>
-                </g>
-                <!-- door + front building windows -->
-                <rect x="113" y="392" width="24" height="38" rx="4" fill="#102A4E" opacity="0.6"/>
-                <g fill="#FFFFFF" opacity="0.85"><rect x="104" y="320" width="13" height="11" rx="2"/><rect x="134" y="320" width="13" height="11" rx="2"/></g>
-
-                <!-- floating accents -->
-                <circle class="float-fast" cx="118" cy="210" r="9" fill="none" stroke="#C2A053" stroke-width="3"/>
-                <rect class="float-fast" x="402" y="372" width="16" height="16" rx="4" fill="none" stroke="#2D5BA8" stroke-width="3"/>
-                <path class="float-mid" d="M70 150 q14 -16 28 0" fill="none" stroke="#C2A053" stroke-width="3" stroke-linecap="round"/>
-              </svg>
+            <div class="hero__photo-card">
+              <img src="assets/img/shakeel-ahmad.jpg" alt="Shakeel Ahmad, Licensed Real Estate Salesperson with Platinum Properties" loading="eager" width="877" height="1024">
+              <span class="hero__photo-caption">
+                <span class="n">Shakeel Ahmad</span>
+                <span class="r">Licensed Real Estate Salesperson</span>
+              </span>
             </div>
             <!-- floating glass trust badges -->
             <div class="art-badge art-badge--tl" aria-hidden="true">
@@ -206,20 +163,24 @@
             <p class="text-soft">Whether you’re buying your first home, selling a family property, or managing an estate during a difficult time, you deserve a steady, communicative partner. I bring local market knowledge, honest guidance, and a calm process from first showing to closing.</p>
             <p class="text-soft">Based in Greece, NY with Platinum Properties, I serve clients across NYC, Rochester, Monroe County, the Finger Lakes and Upstate New York.</p>
 
-            <p class="eyebrow" style="margin-top:1.6rem">Areas Served</p>
-            <div class="areas">
-              <span class="area-chip">NYC</span>
-              <span class="area-chip">Rochester</span>
-              <span class="area-chip">Upstate NY</span>
-              <span class="area-chip">Monroe County</span>
-              <span class="area-chip">Webster</span>
-              <span class="area-chip">Penfield</span>
-              <span class="area-chip">Pittsford</span>
-              <span class="area-chip">Finger Lakes</span>
-            </div>
             <div style="margin-top:1.6rem"><a class="btn btn--outline" href="#contact">Book a Consultation</a></div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ========================== AREAS SERVED ========================== -->
+    <section class="section" aria-labelledby="areas-h">
+      <div class="container">
+        <div class="results-meta" data-reveal>
+          <div>
+            <p class="eyebrow">02 — Areas Served</p>
+            <h2 id="areas-h">Where I work</h2>
+          </div>
+        </div>
+        <!-- Area cards render from AREAS -->
+        <div class="areas-grid" id="areas-grid"></div>
+        <p class="note-italic" style="margin-top:1.2rem">Also serving Monroe County, the Finger Lakes and Upstate New York.</p>
       </div>
     </section>
 
@@ -227,7 +188,7 @@
     <section class="section" aria-labelledby="exp-h">
       <div class="container">
         <div class="section-head" data-reveal>
-          <p class="eyebrow">02 — Experience</p>
+          <p class="eyebrow">03 — Experience</p>
           <h2 id="exp-h">Full-service representation, tailored to you</h2>
           <p class="lede">Focused expertise across the moments that matter most.</p>
         </div>
@@ -256,7 +217,7 @@
       <div class="container">
         <div class="results-meta" data-reveal>
           <div>
-            <p class="eyebrow">03 — Portfolio</p>
+            <p class="eyebrow">04 — Portfolio</p>
             <h2 id="portfolio-h">Recent representative transactions</h2>
           </div>
           <a class="btn btn--outline" href="properties.html">View current listings</a>
@@ -271,7 +232,7 @@
     <section class="section" aria-labelledby="featured-h">
       <div class="container">
         <div class="results-meta" data-reveal>
-          <div><p class="eyebrow">04 — Featured Listings</p><h2 id="featured-h">Homes on the market</h2></div>
+          <div><p class="eyebrow">05 — Featured Listings</p><h2 id="featured-h">Homes on the market</h2></div>
           <a class="btn btn--outline" href="properties.html">Browse all properties</a>
         </div>
         <div class="grid grid-3" id="featured-grid"></div>
@@ -283,7 +244,7 @@
     <section class="section section--gray" aria-labelledby="media-h">
       <div class="container">
         <div class="section-head" data-reveal>
-          <p class="eyebrow">05 — Media</p>
+          <p class="eyebrow">06 — Media</p>
           <h2 id="media-h">An active, professional presence</h2>
           <p class="lede">Headshots, listings, open houses, community events and video — a look at the work in motion.</p>
         </div>
@@ -296,7 +257,7 @@
     <!-- ========================= REVIEWS STRIP ========================= -->
     <section class="section section--tight center" aria-labelledby="reviews-h">
       <div class="container narrow">
-        <p class="eyebrow center">06 — Reviews</p>
+        <p class="eyebrow center">07 — Reviews</p>
         <h2 id="reviews-h">See what clients say — in their own words</h2>
         <p class="lede mx-auto">Read verified reviews on my Zillow and Google profiles.</p>
         <div class="trust-strip" data-reveal style="justify-content:center; margin-top:1.5rem">
@@ -311,7 +272,7 @@
       <div class="container">
         <div class="grid grid-2" style="gap:clamp(2rem,5vw,4rem); align-items:center">
           <div data-reveal>
-            <p class="eyebrow on-dark">07 — Contact</p>
+            <p class="eyebrow on-dark">08 — Contact</p>
             <h2 id="contact-h">Let’s talk about your next move</h2>
             <p class="lede">Book a no-pressure consultation, or reach out directly — I respond six days a week, 8 AM to 8 PM.</p>
             <div class="contact-list" style="margin-top:1.4rem; font-size:1.05rem">

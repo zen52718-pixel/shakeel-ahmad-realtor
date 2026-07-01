@@ -162,6 +162,27 @@
     grid.innerHTML = PROPERTIES.filter((p) => p.featured).map(propertyCardHTML).join('');
   }
 
+  /* 6b) AREAS SERVED (photo cards, deep-link into filtered listings) ----- */
+  function initAreas() {
+    const grid = $('#areas-grid');
+    if (!grid || !window.AREAS) return;
+    grid.innerHTML = AREAS.map((a, i) => {
+      const href = a.cityFilter ? `properties.html?city=${encodeURIComponent(a.cityFilter)}` : 'properties.html';
+      return `
+        <a class="card area-card" href="${href}" data-reveal data-reveal-delay="${Math.min(i, 4)}" aria-label="View properties in ${a.name}">
+          <div class="area-card__media">
+            <img class="area-card__img" src="${a.image}" alt="${a.name} neighborhood" loading="lazy" width="480" height="360">
+            <span class="area-card__tag">${a.tag}</span>
+            <span class="area-card__cap"><span class="n">${a.name}</span></span>
+          </div>
+          <div class="area-card__body">
+            <p class="area-card__blurb">${a.blurb}</p>
+            <span class="area-card__link">View listings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </div>
+        </a>`;
+    }).join('');
+  }
+
   /* 7) PORTFOLIO (transactions) ----------------------------------------- */
   function initPortfolio() {
     const grid = $('#portfolio-grid');
@@ -317,6 +338,7 @@
     initSiteData();
     renderStats();
     initFeatured();
+    initAreas();
     initPortfolio();
     initMedia();
     initHomeSearch();
