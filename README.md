@@ -1,10 +1,12 @@
-# Shakeel Ahmad Realtor — Website (2.0)
+# Shakeel Ahmad Realtor — Website (2.1)
 
-A light, modern, conversion-focused real estate personal-brand website for
+A warm, modern, conversion-focused real estate personal-brand website for
 **Shakeel Ahmad**, Licensed New York Real Estate Salesperson with **Platinum Properties**.
 
-Static site — plain **HTML5 + CSS + vanilla JavaScript**. **No frameworks, no build step,
-no dependencies** beyond Google Fonts. Fast, hostable anywhere, easy to maintain.
+Static front end — plain **HTML5 + CSS + vanilla JavaScript**, no frameworks, no build
+step. The one dynamic piece is **listings**, which live in **Supabase** (Postgres + Auth +
+Storage) and are managed by Shakeel himself through a private admin panel — no code
+editing required to add, edit, or remove a property.
 
 ---
 
@@ -16,68 +18,103 @@ python3 -m http.server 8000     # → http://localhost:8000
 npx serve .
 ```
 
-> Use a local server (not `file://`) so the property page can read `?id=` params.
+> Use a local server (not `file://`) — the property page reads `?id=` params, and
+> `admin.html` / listing pages load Supabase as an ES module.
 
 ---
 
-## Pages (3 main + 1 detail template)
+## Pages
 
 ```
 /
-├── index.html            # Home + Portfolio + Media + Contact (short lead form)
-├── properties.html       # Listings: search, filters, grid
+├── index.html            # Home + Portfolio + Media + Contact (single lead form)
+├── properties.html       # Live listings from Supabase: search, filters, grid
 ├── property.html         # Single listing detail (reads ?id=slug) — linked from cards
-├── buyers-sellers.html   # Lead-gen: buyer & seller paths + detailed forms
-├── robots.txt  sitemap.xml  README.md
+├── buyers-sellers.html   # Buyer/seller paths + the same shared lead form
+├── admin.html            # PRIVATE — Shakeel's listings dashboard (Supabase Auth login)
+├── robots.txt  sitemap.xml  README.md  CLAUDE.md
+├── supabase/
+│   ├── schema.sql         # Run once in the Supabase SQL Editor: table + RLS + storage policies
+│   └── seed.sql            # Optional: 6 sample listings so the site isn't empty at first
 └── assets/
-    ├── img/shakeel-ahmad.jpg
-    ├── css/styles.css     # Full light design system (one file)
+    ├── img/                        # real photos (headshot, hero cutout)
+    ├── css/styles.css              # Full design system (one file, incl. the admin panel)
     └── js/
-        ├── data.js        # SITE + STATS + PROPERTIES + TRANSACTIONS + MEDIA (SINGLE SOURCE OF TRUTH)
-        ├── main.js        # Nav, reveals, counters, renderers, filters, forms
-        └── property.js    # Renders property.html from ?id=
+        ├── data.js                 # SITE + STATS + TRANSACTIONS + MEDIA + AREAS (static content only)
+        ├── supabase-config.js      # The ONE Supabase client (ES module, publishable key)
+        ├── main.js                 # Nav, reveals, counters, listings fetch/render, filters, the shared form
+        ├── property.js             # Renders property.html from ?id= (fetches from Supabase)
+        └── admin.js                # admin.html's login + CRUD + photo upload logic
 ```
 
 Navigation: **Home · Properties · Buyers & Sellers · Contact** (Contact = button to the
-homepage `#contact` form). Sticky header; sticky mobile Call + Consultation bar.
+homepage `#contact` form). `admin.html` is intentionally not in the nav or sitemap —
+it's reached by typing the URL directly, and is blocked from search indexing
+(`noindex` + `robots.txt`).
 
 ---
 
-## Data-driven "add one object" rule
+## Listings: Supabase, managed via /admin.html
 
-All listings live in `assets/js/data.js`. **Adding one object to `PROPERTIES`** automatically
-renders its card (grid + Home featured if `featured: true`), includes it in every filter,
-generates its detail page at `property.html?id=<slug>`, and lists it under **Related
-Properties** — with zero other edits.
+Listings used to be a static array in `data.js`. **They are now rows in Supabase**, and
+the only supported way to add, edit, or delete one is:
 
-Portfolio entries (`TRANSACTIONS`), media tiles (`MEDIA`) and stats (`STATS`) are rendered
-the same way. To plug in a CMS/MLS feed later, replace these arrays with an API response of
-the **same shape** — no view code changes.
+1. Go to `yourdomain.com/admin.html`.
+2. Log in with Shakeel's Supabase Auth credentials (created manually in the Supabase
+   dashboard — there is no public sign-up anywhere).
+3. **Add New Property** / **Edit** / **Delete**. Photos upload by drag-and-drop or file
+   picker directly to Supabase Storage; the resulting URLs are saved automatically.
+
+The change appears on `index.html` (if "Featured"), `properties.html`, and its own
+`property.html?id=<slug>` page **immediately** — no deploy, no code change.
+
+### Architecture
+
+- **Table:** `properties` (see `supabase/schema.sql` for the full column list — address,
+  city, state, zip, price, status, type, beds, baths, sqft, year built, descriptions,
+  features, featured flag, photo URLs).
+- **Row Level Security is the actual access control.** The browser only ever holds the
+  Supabase *publishable* (anon) key — safe to expose, because RLS policies say:
+  anyone can `SELECT`; only an **authenticated** session can `INSERT` / `UPDATE` /
+  `DELETE`. The public site and `admin.html` use the identical key; the difference is
+  purely whether the visitor is logged in.
+- **Storage bucket:** `property-photos` (public read; authenticated-only write), same
+  RLS pattern.
+- **Front end:** `assets/js/main.js` exposes `fetchProperties()` (fetches + caches all
+  rows once per page load) and `mapPropertyRow()` (adapts Supabase's snake_case columns
+  — `year_built`, `short_desc` — into the camelCase shape the render functions expect —
+  `yearBuilt`, `short`). `propertyCardHTML()`, the properties-page filters, and
+  `property.js`'s detail renderer are otherwise **unchanged** from the old static-array
+  version; only where the data comes from is different.
+- **To reset your local Supabase project:** run `supabase/schema.sql`, then optionally
+  `supabase/seed.sql`, in the Supabase SQL Editor.
+
+`SITE`, `STATS`, `TRANSACTIONS`, `MEDIA`, and `AREAS` remain static in `data.js` — only
+listings moved to Supabase.
 
 ---
 
 ## Design system
 
-**Palette (HEX):**
+**Palette (HEX) — warm editorial, not the original navy/blue:**
 
 | Token | Value | Use |
 |---|---|---|
-| White | `#FFFFFF` | base background |
-| Off-white | `#FAFBFC` | subtle surfaces |
-| Light gray | `#F5F7FA` / `#EEF2F7` | section backgrounds |
-| Charcoal | `#16202E` | body text |
-| Ink | `#0B1422` | headings |
-| Navy (primary) | `#102A4E` | primary buttons, brand, dark bands |
-| Blue (accent) | `#2D5BA8` | links, secondary actions, icons |
-| Gold (luxury accent) | `#C2A053` (light `#E4CC8C`, dark `#9B7C34`) | accents, top CTA per section |
+| White / off-white | `#FFFFFF` / `#FBF6EF` | base background |
+| Sand / gray | `#F6EEE0` / `#F0E2C8` | section backgrounds |
+| Charcoal | `#3A2A1E` | body text |
+| Ink | `#241811` | headings |
+| Navy token → espresso | `#2B1B12` (`--navy`) | primary buttons, dark bands (hero gradient, About, Contact) |
+| Blue token → terracotta | `#C8752E` (`--blue`) | links, secondary actions, filter focus rings |
+| Gold token → honey-gold | `#E0A64E` (`--gold`, light `#F0C78A`, dark `#B67A2E`) | luxury accent CTA per section |
 
-Navy + blue do the heavy lifting; **gold is a restrained luxury accent** (eyebrow ticks,
-hairlines, the single most important CTA per section).
+(Token *names* in `styles.css` — `--navy`, `--blue`, `--gold` — are historical; only the
+resolved colors changed to this warmer palette. Every page reskins from that one file.)
 
 **Typography (Google Fonts):** **Space Grotesk** (display/headlines) + **Manrope** (body/UI).
 
-**Components:** glass hero card with a custom **animated isometric architecture SVG**,
-floating trust badges, rounded cards (16–28px), soft shadows, **animated counters**,
+**Components:** warm gradient hero with a real cutout photo in a signature arch/dome
+frame, floating trust badges, rounded cards, soft shadows, animated stat counters,
 fade-in-on-scroll, hover lift, sticky glass header, sticky mobile CTA bar. All motion
 respects `prefers-reduced-motion`.
 
@@ -85,15 +122,21 @@ respects `prefers-reduced-motion`.
 
 ## Forms (lead capture)
 
-- **Home:** short consultation lead form (`#contact`).
-- **Buyers & Sellers:** Buyer Consultation, Seller Consultation + Home Valuation, and an
-  Appointment Request — each capturing name, phone, email, preferred contact method,
-  message, buying/selling, budget, timeline and city.
-- **Property detail:** Schedule a Showing.
+**Exactly one form exists, used everywhere** — Full Name, Phone, Email, "I'm interested
+in" (Buying / Selling / Probate or estate sale / Just exploring), optional Message, and
+a hidden `source_page` auto-filled per context (e.g. "Home", or the specific property
+address on `property.html`).
 
-All forms validate client-side, show a success state, and `console.log` the payload.
-**To deliver leads, connect a real endpoint** (Formspree etc.) — search
-`Connect a real endpoint` in `assets/js/main.js`.
+- One HTML template (`consultationFormHTML()` in `main.js`), one mount helper
+  (`mountConsultationForm()`), one submit handler (`initForms()`) — every page calls the
+  same functions, nothing is copy-pasted.
+- Validates client-side, shows a success state, and `console.log`s the payload.
+- **To connect a real endpoint** (e.g. a GoHighLevel webhook): search
+  `Connect a real endpoint` in `assets/js/main.js` — it's the one place in the whole
+  codebase that sends form data anywhere.
+
+The admin panel (`admin.html`) is a **separate, unrelated form system** (property
+CRUD, not lead capture) — see `assets/js/admin.js`.
 
 ---
 
@@ -103,7 +146,8 @@ All forms validate client-side, show a success state, and `console.log` the payl
 - `RealEstateAgent` (Local Business) JSON-LD on the Home page with real NAP, `areaServed`,
   `openingHours`, and a `sameAs` array of all social/review profiles.
 - Semantic HTML, one `<h1>` per page, skip link, visible focus, lazy images.
-- `robots.txt` + `sitemap.xml` (kept in sync with the page list).
+- `robots.txt` + `sitemap.xml` (kept in sync with the public page list — `admin.html` is
+  deliberately excluded from both).
 
 ---
 
@@ -127,13 +171,13 @@ Footer shows the brokerage name and **Equal Housing Opportunity** (NY advertisin
 
 ## Before launch — checklist
 
-- [ ] Replace sample listings in `data.js` with live/MLS data and real photos.
-- [ ] Swap media-gallery placeholders for real photos and video thumbnails.
-- [ ] Connect the form endpoint (Formspree/Netlify) → `info@shakeelahmadrealtor.com`.
+- [ ] Run `supabase/schema.sql` (and optionally `supabase/seed.sql`) in the Supabase SQL Editor.
+- [ ] Create Shakeel's one Supabase Auth login (Authentication → Users) — email + password.
+- [ ] Log into `/admin.html` and replace the seeded sample listings with real ones + real photos.
+- [ ] Swap media-gallery placeholders (`MEDIA` in `data.js`) for real photos and video thumbnails.
+- [ ] Connect the consultation form to a real endpoint (search `Connect a real endpoint` in `main.js`).
 - [ ] Confirm `info@shakeelahmadrealtor.com` mailbox/forwarding is live.
 - [ ] Resolve the full Google Business Profile URL (replace the `share.google` short link).
-- [ ] (Optional) Dedicated 1200×630 social share image (OG currently uses the headshot).
-- [ ] Confirm brokerage display name vs. license ("Platinum Properties and Asset Management of Rochester").
 - [ ] Point `www.shakeelahmadrealtor.com` DNS at the host; submit sitemap to Search Console.
 
 ---

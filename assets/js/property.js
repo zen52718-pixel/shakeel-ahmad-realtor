@@ -5,9 +5,15 @@
    listing), sticky agent card, related listings, 404 state.
    Reuses propertyCardHTML from main.js and mountConsultationForm() — the
    same single form template/handler used on every other page.
+
+   Data now comes from Supabase (not window.PROPERTIES — that array no
+   longer exists). This file fetches the one row matching ?id=, shows a
+   loading state while that's in flight, and uses the shared fetchProperties()
+   cache (also from main.js) for the "related listings" query so it doesn't
+   re-fetch data main.js may have already loaded.
    ========================================================================== */
 
-(function () {
+(async function () {
   'use strict';
   const $  = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
@@ -17,13 +23,58 @@
       : n;
 
   const root = $('#property-root');
-  if (!root || !window.PROPERTIES) return;
+  if (!root) return;
 
   const id = new URLSearchParams(location.search).get('id');
-  const p = PROPERTIES.find((x) => x.id === id);
 
-  /* NOT FOUND --------------------------------------------------------------*/
-  if (!p) {
+  /* Loading state while Supabase responds ----------------------------------*/
+  root.innerHTML = `
+    <section class="section" style="padding-top:calc(var(--header-h) + 3rem)">
+      <div class="container narrow center">
+        <p class="text-soft">Loading listing…</p>
+      </div>
+    </section>`;
+
+  if (!id) {
+    showNotFound();
+    return;
+  }
+
+  let row, fetchFailed = false;
+  try {
+    const { supabase } = await import('./supabase-config.js');
+    const { data, error } = await supabase.from('properties').select('*').eq('id', id).maybeSingle();
+    if (error) throw error;
+    row = data;
+  } catch (err) {
+    console.error('[property detail]', err);
+    fetchFailed = true;
+  }
+
+  if (fetchFailed) {
+    root.innerHTML = `
+      <section class="section">
+        <div class="container narrow center">
+          <p class="eyebrow center">Error</p>
+          <h1>We couldn’t load this listing</h1>
+          <p class="lede mx-auto">Something went wrong on our end. Please refresh the page, or get in touch and I’ll help you directly.</p>
+          <div class="cta-band"><div class="btn-row">
+            <a class="btn btn--primary" href="properties.html">Browse Listings</a>
+            <a class="btn btn--outline" href="index.html#contact">Contact Shakeel</a>
+          </div></div>
+        </div>
+      </section>`;
+    return;
+  }
+
+  if (!row) {
+    showNotFound();
+    return;
+  }
+
+  const p = window.mapPropertyRow(row);
+
+  function showNotFound() {
     document.title = 'Property not found · Shakeel Ahmad Realtor';
     root.innerHTML = `
       <section class="section">
@@ -37,7 +88,6 @@
           </div></div>
         </div>
       </section>`;
-    return;
   }
 
   /* <head> -----------------------------------------------------------------*/
@@ -50,7 +100,7 @@
   /* spec strip -------------------------------------------------------------*/
   const specCells = p.type === 'Land'
     ? [{ v: p.lot || '—', k: 'Lot Size' }, { v: p.type, k: 'Type' }, { v: p.status, k: 'Status' }, { v: p.zip, k: 'Zip' }]
-    : [{ v: p.beds, k: 'Beds' }, { v: p.baths, k: 'Baths' }, { v: p.sqft.toLocaleString(), k: 'Sq Ft' }, { v: p.yearBuilt || '—', k: 'Year Built' }];
+    : [{ v: p.beds, k: 'Beds' }, { v: p.baths, k: 'Baths' }, { v: (p.sqft || 0).toLocaleString(), k: 'Sq Ft' }, { v: p.yearBuilt || '—', k: 'Year Built' }];
 
   /* gallery ----------------------------------------------------------------*/
   const images = (p.images && p.images.length) ? p.images : [p.image];
@@ -72,7 +122,6 @@
         </nav>
         <p class="eyebrow">${p.city}, ${p.state} · ${p.type}</p>
         <h1>${p.title}</h1>
-        ${p.sample ? '<p class="note-italic">Sample listing — replace with live MLS data before launch.</p>' : ''}
       </div>
     </section>
 
@@ -93,7 +142,7 @@
               <div class="spec-strip">
                 ${specCells.map((c) => `<div class="cell"><div class="v">${c.v}</div><div class="k">${c.k}</div></div>`).join('')}
               </div>
-              <p>${p.description}</p>
+              <p>${p.description || ''}</p>
             </div>
 
             ${featuresHTML ? `
@@ -167,19 +216,25 @@
   }
 
   /* related (auto) ---------------------------------------------------------*/
-  function relatedFor(cur) {
-    const pool = PROPERTIES.filter((x) => x.id !== cur.id);
+  function relatedFor(cur, pool) {
+    const others = pool.filter((x) => x.id !== cur.id);
     const score = (x) => (x.city === cur.city ? 2 : 0) + (x.type === cur.type ? 1 : 0);
-    return pool.sort((a, b) => score(b) - score(a)).slice(0, 3);
+    return others.sort((a, b) => score(b) - score(a)).slice(0, 3);
   }
-  const related = relatedFor(p);
-  if (related.length && window.propertyCardHTML) {
-    $('#related-mount').innerHTML = `
-      <section class="section section--gray">
-        <div class="container">
-          <div class="section-head"><p class="eyebrow">Keep exploring</p><h2>Related Properties</h2></div>
-          <div class="grid grid-3">${related.map(window.propertyCardHTML).join('')}</div>
-        </div>
-      </section>`;
+  try {
+    const allProps = await window.fetchProperties();
+    const related = relatedFor(p, allProps);
+    if (related.length && window.propertyCardHTML) {
+      $('#related-mount').innerHTML = `
+        <section class="section section--gray">
+          <div class="container">
+            <div class="section-head"><p class="eyebrow">Keep exploring</p><h2>Related Properties</h2></div>
+            <div class="grid grid-3">${related.map(window.propertyCardHTML).join('')}</div>
+          </div>
+        </section>`;
+    }
+  } catch (err) {
+    console.error('[related listings]', err);
+    /* Non-critical — just skip the related section rather than show an error. */
   }
 })();

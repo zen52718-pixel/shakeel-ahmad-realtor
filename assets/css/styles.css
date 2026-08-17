@@ -514,6 +514,15 @@ hr.rule { height: 1px; background: var(--line); border: 0; margin: 0; }
 .empty-state { text-align: center; padding: clamp(3rem,8vw,5rem) 1rem; border: 1px dashed var(--line); border-radius: var(--r-lg); background: var(--gray-50); }
 .empty-state svg { width: 46px; height: 46px; stroke: var(--blue); margin-bottom: 1rem; }
 
+/* Loading skeleton — shown while listings are being fetched from Supabase. */
+@keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+.skeleton-card { overflow: hidden; }
+.skeleton-card__media { aspect-ratio: 3/2; background: var(--gray-100); animation: skeleton-pulse 1.6s ease-in-out infinite; }
+.skeleton-card__body { padding: 1.2rem 1.3rem 1.4rem; display: grid; gap: .7rem; }
+.skeleton-line { height: 14px; border-radius: 6px; background: var(--gray-100); animation: skeleton-pulse 1.6s ease-in-out infinite; }
+.skeleton-line--sm { width: 45%; }
+.skeleton-line--lg { width: 85%; }
+
 
 /* 13. PROPERTY DETAIL ====================================================== */
 .detail-grid { display: grid; grid-template-columns: 1.7fr 1fr; gap: clamp(1.5rem,4vw,3rem); align-items: start; }
@@ -727,6 +736,102 @@ hr.rule { height: 1px; background: var(--line); border: 0; margin: 0; }
   .art-badge { display: none; }
   .hero__listing-peek { left: .8rem; right: .8rem; bottom: .8rem; width: auto; }
 }
+
+
+/* 22. ADMIN PANEL ============================================================
+   Utilitarian dashboard for Shakeel to manage listings at /admin.html — same
+   tokens/fonts as the public site, but denser and function-first (no hero
+   motion, no marketing copy). Reuses .card/.btn/.form/.field-group/.badge
+   from the sections above wherever the look already matches.
+   ========================================================================== */
+.admin-body { background: var(--gray-50); min-height: 100vh; }
+
+.admin-header {
+  position: sticky; top: 0; z-index: 50; background: var(--white);
+  border-bottom: 1px solid var(--line); box-shadow: var(--shadow-xs);
+}
+.admin-header .container { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .9rem; }
+.admin-header__actions { display: flex; align-items: center; gap: .7rem; }
+
+.admin-main { padding-block: clamp(2rem, 4vw, 3rem); }
+
+/* Login ---------------------------------------------------------------- */
+.admin-login { min-height: calc(100vh - 74px); display: grid; place-items: center; padding: 1.5rem; }
+.admin-login__card { width: 100%; max-width: 400px; }
+.admin-login__card h1 { font-size: 1.6rem; margin-bottom: .3rem; }
+
+/* Toolbar / table -------------------------------------------------------- */
+.admin-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.6rem; }
+.admin-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--white); box-shadow: var(--shadow-xs); }
+.admin-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+.admin-table th { text-align: left; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--slate); padding: .9rem 1rem; border-bottom: 1px solid var(--line); background: var(--gray-50); }
+.admin-table td { padding: .8rem 1rem; border-bottom: 1px solid var(--line); vertical-align: middle; font-size: .92rem; }
+.admin-table tr:last-child td { border-bottom: 0; }
+.admin-table__thumb { width: 56px; height: 56px; border-radius: var(--r-sm); object-fit: cover; background: var(--gray-100); flex: 0 0 auto; }
+.admin-table__addr { font-weight: 700; color: var(--ink); }
+.admin-table__city { color: var(--slate); font-size: .85rem; }
+.admin-table__actions { display: flex; gap: .5rem; white-space: nowrap; }
+.badge--static { position: static; display: inline-block; }
+
+/* Toast (success/error) --------------------------------------------------- */
+.admin-toast { position: fixed; right: 1.2rem; bottom: 1.2rem; z-index: 200; display: grid; gap: .6rem; }
+.admin-toast__item {
+  min-width: 260px; max-width: 360px; padding: .9rem 1.1rem; border-radius: var(--r-md);
+  background: var(--white); border: 1px solid var(--line); box-shadow: var(--shadow-lg);
+  font-size: .92rem; font-weight: 600; display: flex; align-items: flex-start; gap: .6rem;
+  animation: rise .3s var(--ease) both;
+}
+.admin-toast__item svg { width: 20px; height: 20px; flex: 0 0 auto; margin-top: .1rem; }
+.admin-toast__item--success { border-color: var(--gold-light); }
+.admin-toast__item--success svg { stroke: var(--gold-dark); }
+.admin-toast__item--error { border-color: #D9534F; }
+.admin-toast__item--error svg { stroke: #C0392B; }
+
+/* Modal -------------------------------------------------------------------*/
+.admin-modal-backdrop {
+  position: fixed; inset: 0; z-index: 150; background: rgba(28,17,9,.55);
+  display: flex; align-items: flex-start; justify-content: center; padding: 4vh 1rem;
+  overflow-y: auto;
+}
+.admin-modal-backdrop[hidden] { display: none; }
+.admin-modal { width: 100%; max-width: 720px; background: var(--white); border-radius: var(--r-lg); box-shadow: var(--shadow-lg); }
+.admin-modal__head { display: flex; align-items: center; justify-content: space-between; padding: 1.3rem 1.5rem; border-bottom: 1px solid var(--line); }
+.admin-modal__close { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--white); display: grid; place-items: center; }
+.admin-modal__close svg { width: 18px; height: 18px; }
+.admin-modal__body { padding: 1.5rem; }
+
+/* Compact 2-col field grid for the property form -------------------------- */
+.admin-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+.admin-form-grid .field-group--span2 { grid-column: 1 / -1; }
+
+/* Feature tag/chip input --------------------------------------------------- */
+.chip-input__row { display: flex; gap: .6rem; }
+.chip-input__row input { flex: 1; }
+.chip-list { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .7rem; }
+.chip { display: inline-flex; align-items: center; gap: .4rem; padding: .4rem .5rem .4rem .8rem; border-radius: var(--r-pill); background: var(--gray-50); border: 1px solid var(--line); font-size: .84rem; font-weight: 600; color: var(--charcoal); }
+.chip button { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--gray-150); }
+.chip button svg { width: 11px; height: 11px; }
+
+/* Photo dropzone + previews ------------------------------------------------ */
+.dropzone {
+  border: 2px dashed var(--line); border-radius: var(--r-md); padding: 1.6rem 1rem;
+  text-align: center; cursor: pointer; transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
+}
+.dropzone:hover, .dropzone.is-dragover { border-color: var(--blue); background: var(--blue-50); }
+.dropzone svg { width: 30px; height: 30px; stroke: var(--slate); margin-bottom: .5rem; }
+.dropzone__hint { font-size: .86rem; color: var(--slate); }
+.dropzone__hint strong { color: var(--blue); }
+
+.photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: .7rem; margin-top: 1rem; }
+.photo-thumb { position: relative; aspect-ratio: 1; border-radius: var(--r-sm); overflow: hidden; border: 1px solid var(--line); background: var(--gray-100); }
+.photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.photo-thumb__remove { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; border-radius: 50%; background: rgba(28,17,9,.72); display: grid; place-items: center; }
+.photo-thumb__remove svg { width: 12px; height: 12px; stroke: #fff; }
+.photo-thumb__cover { position: absolute; left: 4px; bottom: 4px; font-size: .58rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; padding: .2rem .45rem; border-radius: var(--r-pill); background: var(--gold); color: var(--ink); }
+.photo-thumb__progress { position: absolute; inset: 0; background: rgba(255,255,255,.85); display: grid; place-items: center; font-size: .68rem; font-weight: 700; color: var(--ink); text-align: center; padding: .3rem; }
+
+.admin-hint { font-size: .82rem; color: var(--slate); margin-top: .4rem; }
+.admin-hint--error { color: #C0392B; font-weight: 600; }
 
 
 /* 21. REDUCED MOTION / PRINT =============================================== */

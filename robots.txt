@@ -3,5 +3,8 @@
 User-agent: *
 Allow: /
 
+# Private admin panel — not part of the public site (also marked noindex on the page itself).
+Disallow: /admin.html
+
 # Point crawlers to the sitemap.
 Sitemap: https://www.shakeelahmadrealtor.com/sitemap.xml

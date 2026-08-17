@@ -1,28 +1,25 @@
 /* ============================================================================
-   data.js — SINGLE SOURCE OF TRUTH
+   data.js — static site content (brand, stats, portfolio, media)
    ----------------------------------------------------------------------------
-   Everything the site renders reads from the objects here:
      • SITE          → brand / agent NAP, hours, markets, socials, SEO
-     • PROPERTIES    → listings (cards, filters, detail page, related)
      • TRANSACTIONS  → honest Portfolio entries (story + service, no numbers)
      • MEDIA         → professional media gallery tiles (placeholders)
      • STATS         → factual animated counters (no invented figures)
 
-   GOLDEN RULE
-   -----------
-   Adding ONE object to PROPERTIES automatically renders its card, filters,
-   detail page (property.html?id=<slug>) and "related" section — zero edits.
+   PROPERTY LISTINGS LIVE IN SUPABASE, NOT HERE.
+   -----------------------------------------------------------------------
+   Listings used to be a static PROPERTIES array in this file. They're now
+   rows in the Supabase `properties` table, managed by Shakeel through
+   /admin.html (add, edit, delete, upload photos — no code editing needed).
+   See supabase/schema.sql for the table shape + RLS policies, and
+   assets/js/main.js's fetchProperties()/mapPropertyRow() for how the front
+   end reads them. This file no longer has anything to do with listings.
 
    IMAGES
    ------
-   Placeholders are generated as inline SVG gradient data-URIs by
-   svgPlaceholder(), so markup always uses real <img loading="lazy"> tags.
-   Swap any `image` / `images[]` value for a real photo URL — nothing else changes.
-
-   FUTURE-PROOFING
-   ---------------
-   Replace these arrays with a CMS/MLS API response of the SAME SHAPE; no view
-   code changes required.
+   svgPlaceholder() still generates inline SVG gradient data-URIs, used by
+   the STATIC content below (MEDIA/portfolio placeholders) that hasn't moved
+   to Supabase.
    ========================================================================== */
 
 
@@ -55,24 +52,6 @@ function svgPlaceholder({ w = 1200, h = 800, from = '#102A4E', to = '#2D5BA8', l
 </svg>`.trim();
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
-
-/* On-palette gradient pairs rotated across listings/media for variety. */
-const GRADIENTS = [
-  { from: '#102A4E', to: '#2D5BA8' },
-  { from: '#0B1E3A', to: '#3567B6' },
-  { from: '#14203A', to: '#27406E' },
-  { from: '#1B2C4A', to: '#9B7C34' }, // navy → gold shadow
-  { from: '#102A4E', to: '#5A78A8' },
-  { from: '#0E2240', to: '#2D5BA8' },
-];
-
-function galleryFor(city, idx, count = 4) {
-  const g = GRADIENTS[idx % GRADIENTS.length];
-  return Array.from({ length: count }, (_, i) =>
-    svgPlaceholder({ from: g.from, to: g.to, label: city, tag: i === 0 ? 'SAMPLE' : `VIEW ${i + 1}` })
-  );
-}
-
 
 /* ============================================================================
    SITE — brand, NAP, hours, markets, socials, SEO defaults
@@ -138,115 +117,6 @@ const STATS = [
   { value: 6, suffix: '', label: 'Days a Week, 8AM–8PM' },
   { value: 5, suffix: '', label: 'Property Types Handled' },
   { value: 100, suffix: '%', label: 'Client-First Representation' },
-];
-
-
-/* ============================================================================
-   PROPERTIES — listings (single source of truth, stable shape)
-   ========================================================================== */
-const PROPERTIES = [
-  {
-    id: 'lakefront-greece-colonial',
-    title: 'Lakefront Colonial',
-    status: 'For Sale',
-    price: 539000,
-    address: '184 Edgemere Drive',
-    city: 'Greece', state: 'NY', zip: '14612',
-    type: 'Single-Family',
-    beds: 4, baths: 3, sqft: 2840, yearBuilt: 2006, lot: '0.42 acre',
-    featured: true, sample: true,
-    short: 'Light-filled colonial with lake views, chef’s kitchen and finished walkout.',
-    description:
-      'A refined four-bedroom colonial moments from Lake Ontario, blending classic millwork with a modern open-concept main floor. The chef’s kitchen opens to a sun-filled great room, while the primary suite offers a spa bath and walk-in closet. A finished walkout lower level and three-season porch extend the living space outdoors.',
-    features: ['Chef’s kitchen with quartz island', 'Primary suite with spa bath', 'Finished walkout lower level', 'Three-season porch', 'Hardwood floors throughout', 'Attached two-car garage'],
-    image: svgPlaceholder({ from: '#102A4E', to: '#2D5BA8', label: 'Greece, NY', tag: 'SAMPLE' }),
-    images: galleryFor('Greece, NY', 0, 5),
-  },
-  {
-    id: 'park-ave-rochester-condo',
-    title: 'Park Avenue Residence',
-    status: 'For Sale',
-    price: 312000,
-    address: '27 Berkeley Street, #3',
-    city: 'Rochester', state: 'NY', zip: '14607',
-    type: 'Condo',
-    beds: 2, baths: 2, sqft: 1390, yearBuilt: 1915, lot: null,
-    featured: true, sample: true,
-    short: 'Restored condo in the heart of the Park Ave district — walkable and turnkey.',
-    description:
-      'A beautifully restored two-bedroom condominium in Rochester’s coveted Park Avenue neighborhood. Original character — tall windows, period trim — meets a renovated kitchen and baths. Steps from cafés, galleries, and the summer festival, with deeded parking and low-maintenance living.',
-    features: ['Renovated kitchen and baths', 'Original windows and trim', 'Deeded off-street parking', 'In-unit laundry', 'Walk Score 92', 'Low monthly HOA'],
-    image: svgPlaceholder({ from: '#0B1E3A', to: '#3567B6', label: 'Rochester, NY', tag: 'SAMPLE' }),
-    images: galleryFor('Rochester, NY', 1, 4),
-  },
-  {
-    id: 'webster-craftsman-estate',
-    title: 'Craftsman Estate',
-    status: 'Pending',
-    price: 689000,
-    address: '912 Holt Road',
-    city: 'Webster', state: 'NY', zip: '14580',
-    type: 'Single-Family',
-    beds: 5, baths: 4, sqft: 3620, yearBuilt: 2014, lot: '0.78 acre',
-    featured: true, sample: true,
-    short: 'Five-bedroom craftsman on nearly an acre with a resort-style backyard.',
-    description:
-      'A stately craftsman estate set on nearly an acre in sought-after Webster. Soaring ceilings, a two-story stone fireplace, and a gourmet kitchen anchor the main level. The private backyard features a heated pool, outdoor kitchen, and mature landscaping — an entertainer’s retreat minutes from the village and the lake.',
-    features: ['Two-story stone fireplace', 'Gourmet kitchen with butler’s pantry', 'Heated in-ground pool', 'Outdoor kitchen', 'First-floor office', 'Three-car garage'],
-    image: svgPlaceholder({ from: '#14203A', to: '#27406E', label: 'Webster, NY', tag: 'SAMPLE' }),
-    images: galleryFor('Webster, NY', 2, 5),
-  },
-  {
-    id: 'penfield-ranch-probate',
-    title: 'Penfield Ranch',
-    status: 'For Sale',
-    price: 274900,
-    address: '45 Sweetbriar Lane',
-    city: 'Penfield', state: 'NY', zip: '14526',
-    type: 'Single-Family',
-    beds: 3, baths: 2, sqft: 1620, yearBuilt: 1978, lot: '0.33 acre',
-    featured: false, sample: true,
-    short: 'Well-kept ranch sold as part of an estate — single-level, move-in ready.',
-    description:
-      'A solid single-level ranch in a quiet Penfield neighborhood, offered as part of a thoughtfully managed estate sale. Three bedrooms, an updated main bath, and a bright living room with a wood-burning fireplace. A practical floor plan and large lot make this an excellent value for first-time buyers or those downsizing.',
-    features: ['Single-level living', 'Wood-burning fireplace', 'Updated main bathroom', 'Large fenced lot', 'Newer roof (2019)', 'Full basement'],
-    image: svgPlaceholder({ from: '#1B2C4A', to: '#9B7C34', label: 'Penfield, NY', tag: 'SAMPLE' }),
-    images: galleryFor('Penfield, NY', 3, 4),
-  },
-  {
-    id: 'pittsford-village-townhouse',
-    title: 'Village Townhouse',
-    status: 'Sold',
-    price: 398000,
-    address: '8 Stonegate Court',
-    city: 'Pittsford', state: 'NY', zip: '14534',
-    type: 'Townhouse',
-    beds: 3, baths: 3, sqft: 2080, yearBuilt: 2001, lot: null,
-    featured: false, sample: true,
-    short: 'Maintenance-free townhouse in award-winning Pittsford schools — recently sold.',
-    description:
-      'A maintenance-free townhouse in the heart of Pittsford, within the award-winning Pittsford school district. Three levels of comfortable living, a private patio, and an attached garage. Walkable to the canal path and village shops. This listing recently closed — contact Shakeel for similar opportunities.',
-    features: ['Pittsford school district', 'Private rear patio', 'Attached garage', 'Open-concept main level', 'Finished lower level', 'Steps to the canal path'],
-    image: svgPlaceholder({ from: '#102A4E', to: '#5A78A8', label: 'Pittsford, NY', tag: 'SAMPLE' }),
-    images: galleryFor('Pittsford, NY', 4, 4),
-  },
-  {
-    id: 'finger-lakes-vineyard-land',
-    title: 'Finger Lakes Vineyard Parcel',
-    status: 'For Sale',
-    price: 189000,
-    address: 'Lot 12 Seneca Ridge Road',
-    city: 'Geneva', state: 'NY', zip: '14456',
-    type: 'Land',
-    beds: 0, baths: 0, sqft: 0, yearBuilt: null, lot: '11.4 acres',
-    featured: false, sample: true,
-    short: 'Gently sloping acreage with lake views — ideal for a vineyard or estate home.',
-    description:
-      'A rare 11.4-acre parcel in the heart of Finger Lakes wine country, with gentle southern slopes and long views toward Seneca Lake. Soils and exposure well suited to a boutique vineyard, with an obvious building envelope for an estate home. Utilities at the road; survey available. A blank canvas in one of Upstate NY’s most desirable regions.',
-    features: ['11.4 acres, gentle south slope', 'Seneca Lake views', 'Utilities at the road', 'Survey available', 'Vineyard-suitable soils', 'No HOA'],
-    image: svgPlaceholder({ from: '#0E2240', to: '#2D5BA8', label: 'Geneva, NY', tag: 'SAMPLE' }),
-    images: galleryFor('Geneva, NY', 5, 4),
-  },
 ];
 
 
@@ -318,9 +188,10 @@ const MEDIA = [
 
 /* ============================================================================
    AREAS — flagship markets shown as photo cards on the Home hero-adjacent
-   "Areas Served" section. cityFilter must match a PROPERTIES `city` value to
-   deep-link into a filtered properties.html view; leave null for regional
-   areas with no single matching listing city (falls back to the full grid).
+   "Areas Served" section. cityFilter must match a listing's `city` value
+   (Supabase `properties` table) to deep-link into a filtered properties.html
+   view; leave null for regional areas with no single matching listing city
+   (falls back to the full grid).
    ========================================================================== */
 const AREAS = [
   { name: 'NYC', tag: 'Relocation', blurb: 'Relocation & investment purchases to and from the city.', cityFilter: null, image: svgPlaceholder({ from: '#0B1E3A', to: '#3567B6', label: 'New York City' }) },
@@ -335,7 +206,6 @@ const AREAS = [
 /* Expose to other scripts (plain globals — no module system / build step). */
 window.SITE = SITE;
 window.STATS = STATS;
-window.PROPERTIES = PROPERTIES;
 window.TRANSACTIONS = TRANSACTIONS;
 window.MEDIA = MEDIA;
 window.AREAS = AREAS;

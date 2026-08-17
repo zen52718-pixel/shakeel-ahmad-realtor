@@ -13,7 +13,15 @@
      There is exactly ONE place that sends the payload anywhere — see the
      "Connect a real endpoint" comment inside initForms(). Wiring a real
      endpoint (e.g. a GoHighLevel webhook) later is a one-line change there.
-   Depends on data.js (SITE, STATS, PROPERTIES, TRANSACTIONS, MEDIA).
+   • Listings now come from Supabase, not a static array. fetchProperties()
+     (dynamic-imports supabase-config.js) fetches + caches every row for the
+     page, and mapPropertyRow() adapts Supabase's snake_case column names to
+     the exact shape propertyCardHTML()/property.js already expect — so the
+     render functions themselves didn't need to change, only where the data
+     comes from. initFeatured() / initPropertiesPage() show a skeleton while
+     the fetch is in flight and a friendly message if it fails.
+   Depends on data.js (SITE, STATS, TRANSACTIONS, MEDIA, AREAS) and
+   assets/js/supabase-config.js (properties — fetched, not in data.js).
    ========================================================================== */
 
 (function () {
@@ -38,6 +46,86 @@
     check:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-11"/></svg>',
   };
   window.PROP_ICONS = ICONS;
+
+  /* ==========================================================================
+     LISTINGS DATA (Supabase) — fetch + map + cache
+     ----------------------------------------------------------------------------
+     mapPropertyRow() adapts a Supabase `properties` row (snake_case columns:
+     year_built, short_desc) into the exact shape the render functions below
+     already expect (yearBuilt, short, …) — so propertyCardHTML() and
+     property.js's detail renderer needed zero changes beyond where the data
+     comes from. `title`/`lot`/`sample` don't exist as columns (the new schema
+     dropped them as unnecessary); title falls back to the address, lot is
+     simply absent (the existing "—" fallback already handles that), and
+     sample is always false since these are real listings now.
+
+     fetchProperties() dynamic-imports supabase-config.js (keeping this file a
+     plain classic script, not a module) and caches the full result for the
+     lifetime of the page load — every page that needs listings fetches once.
+     ========================================================================== */
+  function mapPropertyRow(row) {
+    return {
+      id: row.id,
+      title: row.address,
+      status: row.status,
+      price: row.price,
+      address: row.address,
+      city: row.city,
+      state: row.state,
+      zip: row.zip,
+      type: row.type,
+      beds: row.beds,
+      baths: row.baths,
+      sqft: row.sqft,
+      yearBuilt: row.year_built,
+      lot: null,
+      featured: !!row.featured,
+      sample: false,
+      short: row.short_desc,
+      description: row.description,
+      features: Array.isArray(row.features) ? row.features : [],
+      image: row.image || (Array.isArray(row.images) && row.images[0]) || '',
+      images: (Array.isArray(row.images) && row.images.length) ? row.images : (row.image ? [row.image] : []),
+    };
+  }
+  window.mapPropertyRow = mapPropertyRow;
+
+  let _propertiesCache = null;
+  async function fetchProperties({ force = false } = {}) {
+    if (_propertiesCache && !force) return _propertiesCache;
+    const { supabase } = await import('./supabase-config.js');
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    _propertiesCache = (data || []).map(mapPropertyRow);
+    return _propertiesCache;
+  }
+  window.fetchProperties = fetchProperties;
+
+  /* Skeleton placeholder cards shown while Supabase data is loading. */
+  function skeletonCardsHTML(n = 3) {
+    return Array.from({ length: n }, () => `
+      <div class="card skeleton-card" aria-hidden="true">
+        <div class="skeleton-card__media"></div>
+        <div class="skeleton-card__body">
+          <div class="skeleton-line skeleton-line--sm"></div>
+          <div class="skeleton-line skeleton-line--lg"></div>
+          <div class="skeleton-line skeleton-line--sm"></div>
+        </div>
+      </div>`).join('');
+  }
+
+  /* Friendly, non-technical error message — reuses the .empty-state look. */
+  function errorStateHTML(message) {
+    return `
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        <h3>Something went wrong</h3>
+        <p class="text-soft">${message}</p>
+      </div>`;
+  }
 
 
   /* 1) HEADER ------------------------------------------------------------- */
@@ -161,10 +249,23 @@
   }
   window.propertyCardHTML = propertyCardHTML;
 
-  function initFeatured() {
+  async function initFeatured() {
     const grid = $('#featured-grid');
-    if (!grid || !window.PROPERTIES) return;
-    grid.innerHTML = PROPERTIES.filter((p) => p.featured).map(propertyCardHTML).join('');
+    if (!grid) return;
+    grid.innerHTML = skeletonCardsHTML(3);
+    try {
+      const props = await fetchProperties();
+      const featured = props.filter((p) => p.featured);
+      if (!featured.length) {
+        grid.innerHTML = `<p class="text-soft" style="grid-column:1/-1">No featured listings yet — check back soon.</p>`;
+        return;
+      }
+      grid.innerHTML = featured.map(propertyCardHTML).join('');
+      initReveals();
+    } catch (err) {
+      console.error('[featured listings]', err);
+      grid.innerHTML = errorStateHTML('We couldn’t load listings right now. Please refresh the page or check back shortly.');
+    }
   }
 
   /* ==========================================================================
@@ -310,17 +411,33 @@
   }
 
   /* 9) PROPERTIES PAGE: grid + filters ----------------------------------- */
-  function initPropertiesPage() {
+  async function initPropertiesPage() {
     const grid = $('#properties-grid');
-    if (!grid || !window.PROPERTIES) return;
+    if (!grid) return;
     const els = {
       search: $('#f-search'), city: $('#f-city'), type: $('#f-type'),
       price: $('#f-price'), status: $('#f-status'), reset: $('#f-reset'),
       count: $('#results-count'), empty: $('#empty-state'),
     };
+
+    grid.innerHTML = skeletonCardsHTML(6);
+    if (els.count) els.count.textContent = 'Loading…';
+
+    let allProperties = [];
+    try {
+      allProperties = await fetchProperties();
+    } catch (err) {
+      console.error('[properties page]', err);
+      if (els.count) els.count.textContent = '';
+      if (els.empty) els.empty.hidden = true;
+      grid.hidden = false;
+      grid.innerHTML = errorStateHTML('We couldn’t load listings right now. Please refresh the page or check back shortly.');
+      return;
+    }
+
     const fill = (sel, vals, all) => { if (sel) sel.innerHTML = `<option value="">${all}</option>` + vals.map((v) => `<option value="${v}">${v}</option>`).join(''); };
-    fill(els.city, [...new Set(PROPERTIES.map((p) => p.city))].sort(), 'All cities');
-    fill(els.type, [...new Set(PROPERTIES.map((p) => p.type))].sort(), 'All types');
+    fill(els.city, [...new Set(allProperties.map((p) => p.city))].sort(), 'All cities');
+    fill(els.type, [...new Set(allProperties.map((p) => p.type))].sort(), 'All types');
 
     const buckets = {
       '': () => true,
@@ -340,7 +457,7 @@
       const q = (els.search?.value || '').trim().toLowerCase();
       const city = els.city?.value || '', type = els.type?.value || '', status = els.status?.value || '';
       const priceFn = buckets[els.price?.value || ''] || (() => true);
-      const filtered = PROPERTIES.filter((p) => {
+      const filtered = allProperties.filter((p) => {
         const hay = `${p.address} ${p.city} ${p.state} ${p.zip} ${p.title}`.toLowerCase();
         return (!q || hay.includes(q)) && (!city || p.city === city) && (!type || p.type === type) && (!status || p.status === status) && priceFn(p);
       });

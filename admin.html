@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2B1B12">
+  <meta name="robots" content="noindex, nofollow">
+
+  <title>Admin · Shakeel Ahmad Realtor</title>
+  <meta name="description" content="Private listings dashboard.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="admin-body">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ============================= HEADER ============================= -->
+  <header class="admin-header">
+    <div class="container">
+      <a class="brand" href="admin.html" aria-label="Shakeel Ahmad Realtor — admin">
+        <span class="brand__seal" aria-hidden="true">SA</span>
+        <span><span class="brand__name">Listings Admin</span><span class="brand__role">Shakeel Ahmad Realtor</span></span>
+      </a>
+      <div class="admin-header__actions">
+        <a class="btn btn--outline btn--sm" href="index.html" target="_blank" rel="noopener">View Site</a>
+        <button class="btn btn--outline btn--sm" id="logout-btn" type="button" hidden>Log Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="admin-main">
+    <!-- ============================= LOGIN =============================
+         Shown by default. The dashboard is only revealed after a successful
+         Supabase Auth session is confirmed — see assets/js/admin.js. There
+         is no sign-up form anywhere on this page or site. -->
+    <section class="admin-login" id="login-view">
+      <div class="card card-pad admin-login__card">
+        <h1>Sign In</h1>
+        <p class="text-soft" style="margin-bottom:1.4rem">Log in to manage your property listings.</p>
+        <form class="form" id="login-form" novalidate>
+          <div class="field-group">
+            <label for="login-email">Email</label>
+            <input id="login-email" name="email" type="email" required autocomplete="username" placeholder="you@email.com">
+          </div>
+          <div class="field-group">
+            <label for="login-password">Password</label>
+            <input id="login-password" name="password" type="password" required autocomplete="current-password" placeholder="••••••••">
+          </div>
+          <p class="admin-hint admin-hint--error" id="login-error" hidden></p>
+          <button class="btn btn--primary btn--block" type="submit" id="login-submit">Sign In</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- =========================== DASHBOARD =============================
+         Hidden until authenticated (toggled in admin.js). -->
+    <section class="container" id="dashboard-view" hidden>
+      <div class="admin-toolbar">
+        <div>
+          <p class="eyebrow">Dashboard</p>
+          <h1 style="margin-bottom:0">Your Listings</h1>
+        </div>
+        <button class="btn btn--gold" id="add-property-btn" type="button">+ Add New Property</button>
+      </div>
+
+      <p class="text-soft" id="properties-loading">Loading your listings…</p>
+
+      <div class="admin-table-wrap" id="properties-table-wrap" hidden>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th scope="col">Photo</th>
+              <th scope="col">Address</th>
+              <th scope="col">Price</th>
+              <th scope="col">Status</th>
+              <th scope="col">Featured</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="properties-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="empty-state" id="properties-empty" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" aria-hidden="true"><path d="m3 11 9-7 9 7M5 9v11h14V9M9 20v-6h6v6"/></svg>
+        <h3>No listings yet</h3>
+        <p class="text-soft">Click "Add New Property" above to create your first listing.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== ADD / EDIT PROPERTY MODAL =================== -->
+  <div class="admin-modal-backdrop" id="property-modal" hidden>
+    <div class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="property-modal-title">
+      <div class="admin-modal__head">
+        <h2 id="property-modal-title" style="margin:0; font-size:1.3rem">Add New Property</h2>
+        <button class="admin-modal__close" id="property-modal-close" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="admin-modal__body">
+        <form class="form" id="property-form" novalidate>
+          <input type="hidden" id="pf-id" name="id">
+
+          <div class="admin-form-grid">
+            <div class="field-group field-group--span2">
+              <label for="pf-address">Street address</label>
+              <input id="pf-address" name="address" type="text" required placeholder="184 Edgemere Drive">
+              <span class="error-msg">Please enter the street address.</span>
+            </div>
+            <div class="field-group">
+              <label for="pf-city">City</label>
+              <input id="pf-city" name="city" type="text" required placeholder="Greece">
+              <span class="error-msg">Please enter the city.</span>
+            </div>
+            <div class="field-group">
+              <label for="pf-state">State</label>
+              <input id="pf-state" name="state" type="text" required maxlength="2" placeholder="NY" value="NY" style="text-transform:uppercase">
+              <span class="error-msg">Please enter a 2-letter state.</span>
+            </div>
+            <div class="field-group">
+              <label for="pf-zip">Zip code</label>
+              <input id="pf-zip" name="zip" type="text" required placeholder="14612">
+              <span class="error-msg">Please enter the zip code.</span>
+            </div>
+            <div class="field-group">
+              <label for="pf-price">Price ($)</label>
+              <input id="pf-price" name="price" type="number" min="0" step="1000" required placeholder="539000">
+              <span class="error-msg">Please enter a price.</span>
+            </div>
+            <div class="field-group">
+              <label for="pf-status">Status</label>
+              <select id="pf-status" name="status" required>
+                <option>For Sale</option>
+                <option>Pending</option>
+                <option>Sold</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="pf-type">Property type</label>
+              <select id="pf-type" name="type" required>
+                <option>Single-Family</option>
+                <option>Condo</option>
+                <option>Townhouse</option>
+                <option>Multi-Family</option>
+                <option>Land</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="pf-beds">Beds</label>
+              <input id="pf-beds" name="beds" type="number" min="0" step="1" placeholder="4">
+            </div>
+            <div class="field-group">
+              <label for="pf-baths">Baths</label>
+              <input id="pf-baths" name="baths" type="number" min="0" step="0.5" placeholder="3">
+            </div>
+            <div class="field-group">
+              <label for="pf-sqft">Square feet</label>
+              <input id="pf-sqft" name="sqft" type="number" min="0" step="1" placeholder="2840">
+            </div>
+            <div class="field-group">
+              <label for="pf-year">Year built</label>
+              <input id="pf-year" name="yearBuilt" type="number" min="1700" max="2100" step="1" placeholder="2006">
+            </div>
+            <div class="field-group" style="align-self:end; padding-bottom:.6rem">
+              <label style="display:flex; align-items:center; gap:.6rem; text-transform:none; letter-spacing:0; font-size:.95rem; color:var(--charcoal); font-weight:600">
+                <input id="pf-featured" name="featured" type="checkbox" style="width:auto">
+                Feature on homepage
+              </label>
+            </div>
+
+            <div class="field-group field-group--span2">
+              <label for="pf-short">Short description <span style="text-transform:none; letter-spacing:0; font-weight:600; color:var(--slate-light)">(shown on listing cards)</span></label>
+              <input id="pf-short" name="short_desc" type="text" required placeholder="Light-filled colonial with lake views and a finished walkout.">
+              <span class="error-msg">Please add a short description.</span>
+            </div>
+            <div class="field-group field-group--span2">
+              <label for="pf-desc">Full description</label>
+              <textarea id="pf-desc" name="description" placeholder="Full paragraph for the listing's detail page…"></textarea>
+            </div>
+
+            <div class="field-group field-group--span2">
+              <label for="pf-feature-input">Features &amp; amenities</label>
+              <div class="chip-input__row">
+                <input id="pf-feature-input" type="text" placeholder="e.g. Chef’s kitchen — press Enter to add">
+                <button class="btn btn--outline btn--sm" type="button" id="pf-feature-add">Add</button>
+              </div>
+              <div class="chip-list" id="pf-feature-chips"></div>
+            </div>
+
+            <div class="field-group field-group--span2">
+              <label>Photos</label>
+              <div class="dropzone" id="pf-dropzone" tabindex="0" role="button" aria-label="Upload photos">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4 7 9M12 4l5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+                <p class="dropzone__hint"><strong>Click to upload</strong> or drag photos here</p>
+              </div>
+              <input type="file" id="pf-file-input" accept="image/*" multiple hidden>
+              <p class="admin-hint">The first photo becomes the main listing photo. At least one photo is required.</p>
+              <div class="photo-grid" id="pf-photo-grid"></div>
+              <p class="admin-hint admin-hint--error" id="pf-photo-error" hidden>Please add at least one photo before saving.</p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:.8rem; margin-top:1.6rem">
+            <button class="btn btn--outline" type="button" id="property-form-cancel">Cancel</button>
+            <button class="btn btn--gold" type="submit" id="property-form-submit">Save Property</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================= TOASTS =============================== -->
+  <div class="admin-toast" id="toast-root" aria-live="polite"></div>
+
+  <script type="module" src="assets/js/admin.js"></script>
+</body>
+</html>
