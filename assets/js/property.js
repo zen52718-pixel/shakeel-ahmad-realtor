@@ -1,15 +1,16 @@
 /* ============================================================================
    property.js — renders property.html from ?id=<slug>  (2.0 light theme)
    Breadcrumb, gallery, price/specs, description, features, map placeholder,
-   "Schedule a Showing" form, sticky agent card, related listings, 404 state.
-   Reuses propertyCardHTML / PROP_ICONS from main.js.
+   "Schedule a Showing" (the shared consultation form, prefilled for this
+   listing), sticky agent card, related listings, 404 state.
+   Reuses propertyCardHTML from main.js and mountConsultationForm() — the
+   same single form template/handler used on every other page.
    ========================================================================== */
 
 (function () {
   'use strict';
   const $  = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
-  const ICONS = window.PROP_ICONS || {};
   const formatPrice = (n) =>
     typeof n === 'number'
       ? n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
@@ -135,37 +136,8 @@
             <div class="card card-pad form-card--accent" style="margin-top:1.2rem" id="showing-form">
               <p class="eyebrow">Request a tour</p>
               <h3 style="margin-bottom:1rem">Schedule a Showing</h3>
-              <form class="form" data-form="showing" novalidate>
-                <div class="form-body" style="display:grid; gap:1.1rem">
-                  <input type="hidden" name="property" value="${p.address}, ${p.city} (${p.id})">
-                  <div class="field-group">
-                    <label for="sf-name">Full name</label>
-                    <input id="sf-name" name="name" type="text" required autocomplete="name" placeholder="Your name">
-                    <span class="error-msg">Please enter your name.</span>
-                  </div>
-                  <div class="field-group">
-                    <label for="sf-email">Email</label>
-                    <input id="sf-email" name="email" type="email" required autocomplete="email" placeholder="you@email.com">
-                    <span class="error-msg">Please enter a valid email.</span>
-                  </div>
-                  <div class="field-group">
-                    <label for="sf-phone">Phone</label>
-                    <input id="sf-phone" name="phone" type="tel" required autocomplete="tel" placeholder="(555) 555-5555">
-                    <span class="error-msg">Please enter your phone number.</span>
-                  </div>
-                  <div class="field-group">
-                    <label for="sf-msg">Message (optional)</label>
-                    <textarea id="sf-msg" name="message" placeholder="Preferred days/times to tour this home…" style="min-height:90px"></textarea>
-                  </div>
-                  <button class="btn btn--primary btn--block" type="submit">Request Showing</button>
-                  <p class="note-italic" style="font-size:.82rem">By submitting you agree to be contacted about this property.</p>
-                </div>
-                <div class="form-success" role="status" aria-live="polite">
-                  <div class="form-success__check" aria-hidden="true">${ICONS.check || ''}</div>
-                  <h3>Request received</h3>
-                  <p class="text-soft">Thanks — I’ll reach out shortly to confirm a showing time.</p>
-                </div>
-              </form>
+              <!-- Same shared consultation form used sitewide — prefilled for this listing -->
+              <div id="showing-form-mount"></div>
             </div>
           </aside>
         </div>
@@ -183,6 +155,16 @@
       $$('.gallery__thumb', root).forEach((b) => b.setAttribute('aria-current', String(b === btn)));
     });
   });
+
+  /* Schedule a Showing — the same shared consultation form, prefilled -----*/
+  if (window.mountConsultationForm) {
+    window.mountConsultationForm($('#showing-form-mount', root), {
+      formId: 'showing',
+      sourcePage: `${p.address}, ${p.city} ${p.state} (${p.id})`,
+      defaultIntent: 'Buying a home',
+      accentClass: 'btn--primary',
+    });
+  }
 
   /* related (auto) ---------------------------------------------------------*/
   function relatedFor(cur) {

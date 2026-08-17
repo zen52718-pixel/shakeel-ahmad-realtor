@@ -7,7 +7,12 @@
    • Animated counters (factual stats)
    • Renderers: featured properties, portfolio (transactions), media gallery
    • Properties grid + live filters; home search routing
-   • Forms: validation, success state, payload log, endpoint stub
+   • THE single "Book a Consultation" form — one HTML template
+     (consultationFormHTML), one mount helper (mountConsultationForm), one
+     submit handler (initForms) used by every page and by property.js.
+     There is exactly ONE place that sends the payload anywhere — see the
+     "Connect a real endpoint" comment inside initForms(). Wiring a real
+     endpoint (e.g. a GoHighLevel webhook) later is a one-line change there.
    Depends on data.js (SITE, STATS, PROPERTIES, TRANSACTIONS, MEDIA).
    ========================================================================== */
 
@@ -162,6 +167,92 @@
     grid.innerHTML = PROPERTIES.filter((p) => p.featured).map(propertyCardHTML).join('');
   }
 
+  /* ==========================================================================
+     THE SINGLE CONSULTATION FORM
+     ----------------------------------------------------------------------------
+     One template, used everywhere: Home, Properties (via link), Property
+     detail (Schedule a Showing), and the Buyers & Sellers / Contact form.
+     Fields: Full Name, Phone, Email, "I'm interested in" (select), Message
+     (optional), and a hidden source_page — auto-filled with the page/context
+     the form was submitted from (e.g. "Home", or a specific property address
+     when rendered by property.js).
+
+     mountConsultationForm(container, opts) renders the form into `container`
+     and wires up validation/submit on it. Any page can call this directly;
+     pages that just need the default behavior can instead add
+     `data-consultation-mount` (+ optional data-source-page / data-default-
+     intent / data-accent attributes) to a container and initConsultationForms()
+     will pick it up automatically during init().
+     ========================================================================== */
+  function consultationFormHTML({ formId = 'consultation', sourcePage = 'Website', defaultIntent = '', accentClass = 'btn--gold' } = {}) {
+    const opt = (label) => `<option${defaultIntent === label ? ' selected' : ''}>${label}</option>`;
+    return `
+      <form class="form" data-form="consultation" novalidate>
+        <div class="form-body" style="display:grid; gap:1.1rem">
+          <input type="hidden" name="source_page" value="${sourcePage}">
+          <div class="form-row">
+            <div class="field-group">
+              <label for="${formId}-name">Full name</label>
+              <input id="${formId}-name" name="name" type="text" required autocomplete="name" placeholder="Your name">
+              <span class="error-msg">Please enter your name.</span>
+            </div>
+            <div class="field-group">
+              <label for="${formId}-phone">Phone</label>
+              <input id="${formId}-phone" name="phone" type="tel" required autocomplete="tel" placeholder="(555) 555-5555">
+              <span class="error-msg">Please enter your phone.</span>
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="${formId}-email">Email</label>
+            <input id="${formId}-email" name="email" type="email" required autocomplete="email" placeholder="you@email.com">
+            <span class="error-msg">Please enter a valid email.</span>
+          </div>
+          <div class="field-group">
+            <label for="${formId}-intent">I’m interested in</label>
+            <select id="${formId}-intent" name="intent" required>
+              <option value=""${defaultIntent ? '' : ' selected'}>Select one…</option>
+              ${opt('Buying a home')}
+              ${opt('Selling a home')}
+              ${opt('Probate or estate sale')}
+              ${opt('Just exploring')}
+            </select>
+            <span class="error-msg">Please choose an option.</span>
+          </div>
+          <div class="field-group">
+            <label for="${formId}-msg">Message <span style="text-transform:none; letter-spacing:0; font-weight:600; color:var(--slate-light)">(optional)</span></label>
+            <textarea id="${formId}-msg" name="message" placeholder="Tell me a little about your goals…" style="min-height:100px"></textarea>
+          </div>
+          <button class="btn ${accentClass} btn--block" type="submit">Book a Consultation</button>
+          <p class="note-italic" style="font-size:.82rem">By submitting you agree to be contacted about your inquiry.</p>
+        </div>
+        <div class="form-success" role="status" aria-live="polite">
+          <div class="form-success__check" aria-hidden="true">${ICONS.check}</div>
+          <h3>Thank you — message sent</h3>
+          <p class="text-soft">I’ll reach out shortly. For anything urgent, call or text ${(window.SITE && window.SITE.cell) || '(718) 696-9245'}.</p>
+        </div>
+      </form>`;
+  }
+  window.consultationFormHTML = consultationFormHTML;
+
+  function mountConsultationForm(container, opts = {}) {
+    if (!container) return;
+    container.innerHTML = consultationFormHTML(opts);
+    initForms(container);
+  }
+  window.mountConsultationForm = mountConsultationForm;
+
+  /* Auto-mount for simple pages: <div data-consultation-mount data-source-page="Home">. */
+  function initConsultationForms() {
+    $$('[data-consultation-mount]').forEach((el) => {
+      mountConsultationForm(el, {
+        formId: el.id || 'consultation',
+        sourcePage: el.getAttribute('data-source-page') || 'Website',
+        defaultIntent: el.getAttribute('data-default-intent') || '',
+        accentClass: el.getAttribute('data-accent') || 'btn--gold',
+      });
+    });
+  }
+
   /* 6b) AREAS SERVED (photo cards, deep-link into filtered listings) ----- */
   function initAreas() {
     const grid = $('#areas-grid');
@@ -283,9 +374,15 @@
     });
   }
 
-  /* 11) FORMS ------------------------------------------------------------ */
-  function initForms() {
-    $$('form[data-form]').forEach((form) => {
+  /* 11) FORMS --------------------------------------------------------------
+     Attaches validation + submit behavior to consultation form(s) within
+     `root` (defaults to the whole document). Called once per rendered form
+     by mountConsultationForm() — never call this twice on the same root,
+     or listeners will double-bind. This is the ONLY place in the codebase
+     that sends form data anywhere, for every instance of the one shared
+     form on every page. ------------------------------------------------- */
+  function initForms(root = document) {
+    $$('form[data-form="consultation"]', root).forEach((form) => {
       const successEl = form.querySelector('.form-success');
       const showError = (f, on) => { const g = f.closest('.field-group'); if (g) g.classList.toggle('has-error', on); };
       const validate = (f) => {
@@ -305,17 +402,18 @@
         if (!valid) { firstInvalid?.focus(); return; }
 
         const payload = Object.fromEntries(new FormData(form).entries());
-        payload._form = form.getAttribute('data-form') || 'contact';
         payload._submittedAt = new Date().toISOString();
-        console.log('[Form submission]', payload);
+        console.log('[Consultation form submission]', payload);
 
         /* ----------------------------------------------------------------
-           Connect a real endpoint (Formspree, etc.) here later, e.g.:
-             fetch('https://formspree.io/f/XXXXXXXX', {
-               method: 'POST', headers: { Accept: 'application/json' },
-               body: new FormData(form),
+           ONE endpoint for the ONE form. Connect the real GoHighLevel
+           webhook here — this is the only line that needs to change:
+             fetch('https://services.leadconnectorhq.com/hooks/XXXXXXXX', {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify(payload),
              }).then(...).catch(...);
-           Until then we show the success state below.
+           Until then we just show the success state below.
         ---------------------------------------------------------------- */
 
         if (successEl) {
@@ -343,7 +441,7 @@
     initMedia();
     initHomeSearch();
     initPropertiesPage();
-    initForms();
+    initConsultationForms();
     initReveals();
     initCounters();
   }

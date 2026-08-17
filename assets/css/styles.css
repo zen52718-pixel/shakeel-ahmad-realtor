@@ -590,7 +590,6 @@ hr.rule { height: 1px; background: var(--line); border: 0; margin: 0; }
 /* 15. FORMS ================================================================ */
 .form { display: grid; gap: 1.1rem; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
-.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.1rem; }
 .form .field-group { display: grid; gap: .4rem; }
 .form label { font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--slate); }
 .form input,.form select,.form textarea { width: 100%; padding: .85rem .95rem; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--white); font: inherit; font-size: .98rem; color: var(--ink); transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
@@ -607,12 +606,6 @@ hr.rule { height: 1px; background: var(--line); border: 0; margin: 0; }
 .form-success.is-visible { display: block; animation: rise var(--dur) var(--ease) both; }
 .form-success__check { width: 56px; height: 56px; border-radius: 50%; background: var(--navy); display: grid; place-items: center; margin: 0 auto 1rem; }
 .form-success__check svg { width: 28px; height: 28px; stroke: var(--gold-light); }
-
-/* Radio/checkbox group for preferred contact method */
-.choice-row { display: flex; flex-wrap: wrap; gap: .6rem; }
-.choice { display: inline-flex; align-items: center; gap: .45rem; padding: .55rem .9rem; border: 1px solid var(--line); border-radius: var(--r-pill); font-weight: 600; font-size: .88rem; cursor: pointer; transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease); }
-.choice input { width: auto; margin: 0; accent-color: var(--blue); }
-.choice:has(input:checked) { border-color: var(--blue); background: var(--blue-50); }
 
 
 /* 16. FOOTER =============================================================== */
@@ -711,7 +704,7 @@ hr.rule { height: 1px; background: var(--line); border: 0; margin: 0; }
   .detail-grid { grid-template-columns: 1fr; }
   .agent-card { position: static; }
   .features { columns: 1; }
-  .form-row,.form-row-3 { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
   .filter-grid { grid-template-columns: 1fr 1fr; }
   .filter-grid .field--search,.filter-grid .field--reset { grid-column: 1 / -1; }

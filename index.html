@@ -101,7 +101,7 @@
                 <span class="bs-label">Buy<small>Find your next home</small></span>
                 <svg class="bs-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               </a>
-              <a class="buysell-btn buysell-btn--sell" href="buyers-sellers.html#seller-form">
+              <a class="buysell-btn buysell-btn--sell" href="#contact">
                 <span class="bs-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
                 <span class="bs-label">Sell<small>Get a home valuation</small></span>
                 <svg class="bs-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -149,7 +149,7 @@
             <p class="category-arch__desc">From search strategy to negotiation and inspections, I help you find the right home and win it on the right terms.</p>
             <span class="category-arch__link">Start your search <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
-          <a class="category-arch" href="buyers-sellers.html#seller-form" data-reveal data-reveal-delay="1">
+          <a class="category-arch" href="#contact" data-reveal data-reveal-delay="1">
             <div class="category-arch__photo arch-top ph-sell">
               <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
               <span class="category-arch__label">Sell My Home</span>
@@ -157,7 +157,7 @@
             <p class="category-arch__desc">Pricing, preparation and marketing that present your property at its best — with clear communication at every step.</p>
             <span class="category-arch__link">Get a valuation <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
-          <a class="category-arch" href="buyers-sellers.html" data-reveal data-reveal-delay="2">
+          <a class="category-arch" href="#contact" data-reveal data-reveal-delay="2">
             <div class="category-arch__photo arch-top ph-probate">
               <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"><path d="M9 12h6M9 16h6M9 8h2M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/></svg>
               <span class="category-arch__label">Probate &amp; Estate</span>
@@ -278,32 +278,10 @@
             <p class="text-soft" style="margin-top:1rem">2270 Latta Road, Greece, NY 14612 · Platinum Properties · NYS License #10401314142</p>
           </div>
 
-          <!-- Short homepage lead form -->
+          <!-- THE single shared "Book a Consultation" form (rendered by main.js) -->
           <div class="card form-card form-card--accent" data-reveal data-reveal-delay="1">
             <h3 style="margin-bottom:1rem">Book a Consultation</h3>
-            <form class="form" data-form="home-lead" novalidate>
-              <div class="form-body" style="display:grid; gap:1.1rem">
-                <div class="form-row">
-                  <div class="field-group"><label for="h-name">Full name</label><input id="h-name" name="name" type="text" required autocomplete="name" placeholder="Your name"><span class="error-msg">Please enter your name.</span></div>
-                  <div class="field-group"><label for="h-phone">Phone</label><input id="h-phone" name="phone" type="tel" required autocomplete="tel" placeholder="(555) 555-5555"><span class="error-msg">Please enter your phone.</span></div>
-                </div>
-                <div class="field-group"><label for="h-email">Email</label><input id="h-email" name="email" type="email" required autocomplete="email" placeholder="you@email.com"><span class="error-msg">Please enter a valid email.</span></div>
-                <div class="field-group"><label for="h-intent">I’m interested in</label>
-                  <select id="h-intent" name="intent" required>
-                    <option value="">Select one…</option>
-                    <option>Buying a home</option><option>Selling a home</option><option>Probate / estate sale</option><option>General question</option>
-                  </select><span class="error-msg">Please choose an option.</span>
-                </div>
-                <div class="field-group"><label for="h-msg">Message</label><textarea id="h-msg" name="message" required placeholder="Tell me a little about your timeline or goals…" style="min-height:100px"></textarea><span class="error-msg">Please add a short message.</span></div>
-                <button class="btn btn--gold btn--block" type="submit">Request My Consultation</button>
-                <p class="note-italic" style="font-size:.82rem">By submitting you agree to be contacted about your inquiry.</p>
-              </div>
-              <div class="form-success" role="status" aria-live="polite">
-                <div class="form-success__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg></div>
-                <h3>Thank you — message sent</h3>
-                <p class="text-soft">I’ll reach out shortly. For anything urgent, call or text (718) 696-9245.</p>
-              </div>
-            </form>
+            <div id="home-consultation" data-consultation-mount data-source-page="Home"></div>
           </div>
         </div>
       </div>
