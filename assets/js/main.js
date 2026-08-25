@@ -27,6 +27,14 @@
 (function () {
   'use strict';
 
+  /* CRM webhook — the one place the consultation form's payload is sent.
+     Change only this constant to point leads at a different endpoint. */
+  const CRM_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/Lg7FVQDIbjPz7lLJPBBN/webhook-trigger/84032bcd-7eb1-4712-930a-95241ef8f3ea';
+  /* Payloads that failed to reach the CRM webhook this page load (never sent
+     to localStorage — this environment doesn't support it — so this is a
+     best-effort in-memory record, not a durable queue). */
+  const failedSubmissions = [];
+
   const $  = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -522,26 +530,47 @@
         payload._submittedAt = new Date().toISOString();
         console.log('[Consultation form submission]', payload);
 
-        /* ----------------------------------------------------------------
-           ONE endpoint for the ONE form. Connect the real GoHighLevel
-           webhook here — this is the only line that needs to change:
-             fetch('https://services.leadconnectorhq.com/hooks/XXXXXXXX', {
-               method: 'POST',
-               headers: { 'Content-Type': 'application/json' },
-               body: JSON.stringify(payload),
-             }).then(...).catch(...);
-           Until then we just show the success state below.
-        ---------------------------------------------------------------- */
+        const showSuccess = () => {
+          if (successEl) {
+            form.querySelectorAll('.form-body').forEach((el) => (el.hidden = true));
+            successEl.classList.add('is-visible');
+            successEl.setAttribute('tabindex', '-1');
+            successEl.focus();
+            successEl.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'center' });
+          } else {
+            form.reset();
+          }
+        };
 
-        if (successEl) {
-          form.querySelectorAll('.form-body').forEach((el) => (el.hidden = true));
-          successEl.classList.add('is-visible');
-          successEl.setAttribute('tabindex', '-1');
-          successEl.focus();
-          successEl.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'center' });
-        } else {
-          form.reset();
-        }
+        /* ----------------------------------------------------------------
+           ONE endpoint for the ONE form. A lead never sees a failure here —
+           the success state always shows — but a failed send is logged and
+           kept in `failedSubmissions` so it isn't silently lost.
+        ---------------------------------------------------------------- */
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
+
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
+
+        fetch(CRM_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error(`CRM webhook responded with ${res.status}`);
+          })
+          .catch((err) => {
+            console.error('[Consultation form] CRM webhook failed', err);
+            failedSubmissions.push(payload);
+            if (submitBtn) submitBtn.disabled = false;
+          })
+          .finally(() => {
+            clearTimeout(timeout);
+            showSuccess();
+          });
       });
     });
   }
