@@ -24,6 +24,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/cinematic.css">
+  <link rel="preload" as="image" href="assets/img/hero-poster.jpg">
 
   <!-- SEO: structured data — LocalBusiness / RealEstateAgent -->
   <script type="application/ld+json">
@@ -62,7 +64,7 @@
   }
   </script>
 </head>
-<body class="home-page">
+<body class="home-page cinematic-page">
   <a class="skip-link" href="#main">Skip to content</a>
 
   <!-- ============================= HEADER ============================= -->
@@ -85,7 +87,12 @@
   </header>
 
   <main id="main">
-    <section class="editorial-hero" aria-labelledby="hero-title">
+    <section class="editorial-hero cinematic-hero" aria-labelledby="hero-title">
+      <div class="cinematic-media" aria-hidden="true">
+        <img class="cinematic-poster" src="assets/img/hero-poster.jpg" alt="" width="1920" height="1080" fetchpriority="high">
+        <video id="hero-film" muted loop playsinline preload="none" tabindex="-1" poster="assets/img/hero-poster.jpg" data-desktop-src="assets/video/hero-desktop.mp4" data-mobile-src="assets/video/hero-mobile.mp4"></video>
+      </div>
+      <div class="cinematic-shade" aria-hidden="true"></div>
       <div class="container editorial-hero__grid">
         <div class="editorial-hero__copy">
           <p class="eyebrow">NEW YORK REAL ESTATE, PERSONALLY GUIDED</p>
@@ -94,18 +101,13 @@
           <div class="editorial-hero__actions"><a class="btn btn--primary" href="properties.html">Explore properties <span aria-hidden="true"><svg class="direction-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></span></a><a class="editorial-link" href="#contact">Let’s talk about your move <span aria-hidden="true"><svg class="direction-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></span></a></div>
           <div class="hero-location"><span class="location-dot" aria-hidden="true"></span> Rochester &amp; Upstate New York <span class="hero-location__extra">· NYC relocation</span></div>
         </div>
-        <div class="portrait-stage">
-          <div class="portrait-stage__lines" aria-hidden="true"></div>
-          <span class="portrait-stage__label">LOCAL KNOWLEDGE. PERSONAL CONNECTION.</span>
-          <img src="assets/img/shakeel-hero-clipboard.png" alt="Shakeel Ahmad, your licensed New York real estate salesperson" width="920" height="1009" fetchpriority="high">
-          <div class="portrait-caption"><div><strong>Shakeel Ahmad</strong><span>Licensed Real Estate Salesperson</span></div><span class="portrait-caption__mark" aria-hidden="true"><svg class="direction-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></span></div>
-          <div class="portrait-license">PLATINUM PROPERTIES <span>NY #10401314142</span></div>
-        </div>
+        <a class="cinematic-agent" href="#about"><img src="assets/img/shakeel-ahmad.jpg" alt="" width="56" height="56"><span><strong>Shakeel Ahmad</strong><small>PLATINUM PROPERTIES · NY #10401314142</small></span><svg class="direction-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></a>
       </div>
+      <div class="container cinematic-bottom"><a href="#services" class="discover-link">SCROLL TO DISCOVER <span aria-hidden="true">↓</span></a><div class="film-meta"><span>ARCHITECTURAL INSPIRATION · AI FILM</span><button type="button" class="film-toggle" aria-controls="hero-film" hidden>Play background</button></div></div>
     </section>
     <div class="market-ribbon"><div class="container"><span>YOUR NEXT MOVE STARTS HERE</span><p>Local expertise.<i aria-hidden="true">✧</i> Honest advice.<i aria-hidden="true">✧</i> A clearer way home.</p></div></div>
 
-    <section class="section services-section" aria-labelledby="exp-h">
+    <section class="section services-section" id="services" aria-labelledby="exp-h">
       <div class="container">
         <div class="editorial-heading"><div><p class="eyebrow">01 / MADE FOR YOUR NEXT CHAPTER</p><h2 id="exp-h">Big decisions.<br>Thoughtful guidance.</h2></div><p>Every move has a story. Whatever yours looks like, let’s find the right way forward.</p></div>
         <div class="service-grid">
@@ -261,5 +263,6 @@
 
   <script src="assets/js/data.js"></script>
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/cinematic.js" defer></script>
 </body>
 </html>

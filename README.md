@@ -1,3 +1,24 @@
+## Cinematic hero (November 2026)
+
+The homepage now has a full-height architectural film behind its existing title,
+subtitle and calls to action. The core content sections and listing workflow are intact.
+`assets/css/cinematic.css` and `assets/js/cinematic.js` contain the progressive visual
+layer, scroll-linked background scale, subtle pointer-only service card tilt, and
+accessible playback control. No framework, WebGL context or new runtime dependency
+is needed for these effects.
+
+The 8-second silent film was generated with Higgsfield Seedance 2.5 at 1080p, using
+`home-interior.jpg` for start and end references. Job: `10b18adc-d183-413f-b7df-d0f6c3538eac`.
+A forward/reverse camera path closes the loop with matching endpoint compositions.
+Desktop: `assets/video/hero-desktop.mp4` (1920×1080). Mobile:
+`assets/video/hero-mobile.mp4` (1280×720). Both use H.264, 30 fps, no audio, and fast-start
+metadata. `assets/img/hero-poster.jpg` is the first frame and loads before video.
+The film is illustrative AI imagery, never listing inventory.
+
+Reduced-motion and data-saving preferences prevent automatic video downloads.
+Visitors may explicitly play the background. Playback pauses outside the hero and
+in hidden tabs; network or autoplay failures leave the still image visible.
+
 # File-based listings — current architecture (November 2026)
 
 This section supersedes the historical Supabase instructions below. The site now
