@@ -3,6 +3,20 @@
 Project memory for Claude Code. Read this before making changes. Keep it up to date
 when architecture, brand facts, or conventions change.
 
+## Current redesign (supersedes historical visual specifications below)
+
+The homepage is now an editorial layout: ivory background, espresso/olive sections,
+terracotta accents, squared photo/card treatments, a real agent portrait hero, service
+photographs, featured listings, agent biography, text-only regional directory, process,
+review profile links, and consultation form. Shared overrides live in section 22 of
+`assets/css/styles.css`. Space Grotesk/Manrope remain, with a Georgia italic hero accent.
+The old arch service cards, sample hero listing, portfolio and media placeholder galleries
+are no longer mounted on Home. Existing data and renderers remain available. Service
+photos are illustrative, not property inventory; see `assets/img/SOURCES.md`.
+Supabase, admin CRUD, brand facts, real contact details and CRM endpoint remain intact.
+Buyer/seller paths have `#buying` and `#selling` anchors; the estate CTA preselects the
+existing consultation intent. No new runtime packages or build system were added.
+
 ## Project
 A production-ready, multi-page **real estate marketing website** for a licensed New York
 agent. Goal: premium brand presence, listings showcase, and lead generation. Front end is

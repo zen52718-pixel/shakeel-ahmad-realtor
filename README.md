@@ -27,7 +27,7 @@ npx serve .
 
 ```
 /
-├── index.html            # Home + Portfolio + Media + Contact (single lead form)
+├── index.html            # Home + Services + Markets + Contact (single lead form)
 ├── properties.html       # Live listings from Supabase: search, filters, grid
 ├── property.html         # Single listing detail (reads ?id=slug) — linked from cards
 ├── buyers-sellers.html   # Buyer/seller paths + the same shared lead form
@@ -96,27 +96,26 @@ listings moved to Supabase.
 
 ## Design system
 
-**Palette (HEX) — warm editorial, not the original navy/blue:**
+The redesigned site uses ivory and stone surfaces, muted espresso/olive dark sections,
+terracotta text accents, and restrained champagne buttons. Space Grotesk and Manrope
+remain the display and UI fonts, with a Georgia italic accent on the homepage headline.
+The shared design rules are in section 22 of `assets/css/styles.css`.
 
-| Token | Value | Use |
-|---|---|---|
-| White / off-white | `#FFFFFF` / `#FBF6EF` | base background |
-| Sand / gray | `#F6EEE0` / `#F0E2C8` | section backgrounds |
-| Charcoal | `#3A2A1E` | body text |
-| Ink | `#241811` | headings |
-| Navy token → espresso | `#2B1B12` (`--navy`) | primary buttons, dark bands (hero gradient, About, Contact) |
-| Blue token → terracotta | `#C8752E` (`--blue`) | links, secondary actions, filter focus rings |
-| Gold token → honey-gold | `#E0A64E` (`--gold`, light `#F0C78A`, dark `#B67A2E`) | luxury accent CTA per section |
+The homepage now contains an agent portrait hero, three photo-led service paths,
+Supabase featured listings, an agent introduction, a six-market directory, a three-step
+process, verified review links, and the existing consultation form. Service photographs
+are illustrative architecture/interior imagery, not listings or transaction photos.
+Their sources are recorded in `assets/img/SOURCES.md`. Existing static portfolio/media
+data remain available in `data.js`, but their placeholder galleries are no longer shown.
 
-(Token *names* in `styles.css` — `--navy`, `--blue`, `--gold` — are historical; only the
-resolved colors changed to this warmer palette. Every page reskins from that one file.)
+The listings, buyer/seller guides, property details, and private admin panel share the
+updated colors, buttons, forms, card styles, and responsive navigation. No build step
+or new runtime dependency was added. Supabase and the CRM webhook are unchanged.
 
-**Typography (Google Fonts):** **Space Grotesk** (display/headlines) + **Manrope** (body/UI).
-
-**Components:** warm gradient hero with a real cutout photo in a signature arch/dome
-frame, floating trust badges, rounded cards, soft shadows, animated stat counters,
-fade-in-on-scroll, hover lift, sticky glass header, sticky mobile CTA bar. All motion
-respects `prefers-reduced-motion`.
+Validation: Chromium checks covered all pages at desktop/mobile sizes, homepage widths
+320–1440px, the mobile menu, estate inquiry preselection, and listing filters, gallery,
+and form behavior with mocked backend responses. Live Supabase access could not be
+verified in the cloud preview environment (outbound proxy denied the API request).
 
 ---
 
