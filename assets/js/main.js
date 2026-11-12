@@ -13,16 +13,9 @@
      There is exactly ONE place that sends the payload anywhere — see the
      "Connect a real endpoint" comment inside initForms(). Wiring a real
      endpoint (e.g. a GoHighLevel webhook) later is a one-line change there.
-   • Listings now come from Supabase, not a static array. fetchProperties()
-     (dynamic-imports supabase-config.js) fetches + caches every row for the
-     page, and mapPropertyRow() adapts Supabase's snake_case column names to
-     the exact shape propertyCardHTML()/property.js already expect — so the
-     render functions themselves didn't need to change, only where the data
-     comes from. initFeatured() / initPropertiesPage() show a skeleton while
-     the fetch is in flight and a friendly message if it fails.
-   Depends on data.js (SITE, STATS, TRANSACTIONS, MEDIA, AREAS) and
-   assets/js/supabase-config.js (properties — fetched, not in data.js).
-   ========================================================================== */
+   • Listings load from assets/data/properties.json through listings-store.js.
+   • No database, authentication SDK, or external listing service is required.
+   */
 
 (function () {
   'use strict';
@@ -55,23 +48,10 @@
   };
   window.PROP_ICONS = ICONS;
 
-  /* ==========================================================================
-     LISTINGS DATA (Supabase) — fetch + map + cache
-     ----------------------------------------------------------------------------
-     mapPropertyRow() adapts a Supabase `properties` row (snake_case columns:
-     year_built, short_desc) into the exact shape the render functions below
-     already expect (yearBuilt, short, …) — so propertyCardHTML() and
-     property.js's detail renderer needed zero changes beyond where the data
-     comes from. `title`/`lot`/`sample` don't exist as columns (the new schema
-     dropped them as unnecessary); title falls back to the address, lot is
-     simply absent (the existing "—" fallback already handles that), and
-     sample is always false since these are real listings now.
-
-     fetchProperties() dynamic-imports supabase-config.js (keeping this file a
-     plain classic script, not a module) and caches the full result for the
-     lifetime of the page load — every page that needs listings fetches once.
-     ========================================================================== */
+  /* Static JSON listings: adapt snake_case data to the existing renderers. */
   function mapPropertyRow(row) {
+    const escape = (value) => String(value ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    row = { ...row, ...Object.fromEntries(['address','city','state','zip','short_desc','description'].map((key) => [key, escape(row[key])])), features: (row.features || []).map(escape) };
     return {
       id: row.id,
       title: row.address,
@@ -101,18 +81,14 @@
   let _propertiesCache = null;
   async function fetchProperties({ force = false } = {}) {
     if (_propertiesCache && !force) return _propertiesCache;
-    const { supabase } = await import('./supabase-config.js');
-    const { data, error } = await supabase
-      .from('properties')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (error) throw error;
+    const { readListings } = await import('./listings-store.js');
+    const data = await readListings();
     _propertiesCache = (data || []).map(mapPropertyRow);
     return _propertiesCache;
   }
   window.fetchProperties = fetchProperties;
 
-  /* Skeleton placeholder cards shown while Supabase data is loading. */
+  /* Skeleton placeholder cards shown while listing data is loading. */
   function skeletonCardsHTML(n = 3) {
     return Array.from({ length: n }, () => `
       <div class="card skeleton-card" aria-hidden="true">

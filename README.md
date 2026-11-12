@@ -1,3 +1,20 @@
+# File-based listings — current architecture (November 2026)
+
+This section supersedes the historical Supabase instructions below. The site now
+uses `assets/data/properties.json`; `assets/js/listings-store.js` loads and validates
+it. Home, search/filter pages, details and related listings use this same file.
+No Supabase client is loaded by active pages. The old config/schema files are
+retained for reference only. Brand details and the CRM integration are unchanged.
+
+`admin.html` is a draft editor, not a protected CMS. It has no login and cannot
+write to hosting. Only hosting/repository access can publish changes. Add/edit/
+delete listings and add photos, then download JSON and upload it to the host.
+Do not claim that Save Draft publishes a listing. See LISTINGS-GUIDE.md.
+
+---
+
+## Historical documentation (Supabase workflow is superseded)
+
 # Shakeel Ahmad Realtor — Website (2.1)
 
 A warm, modern, conversion-focused real estate personal-brand website for

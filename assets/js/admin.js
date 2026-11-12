@@ -1,35 +1,12 @@
-/* ============================================================================
-   admin.js — private listings dashboard (admin.html)
-   ----------------------------------------------------------------------------
-   • Supabase Auth (email/password) — no public sign-up anywhere here.
-   • Dashboard: list / add / edit / delete properties.
-   • Photo upload to the `property-photos` storage bucket (drag-and-drop or
-     file picker), with step-count progress ("Uploading 2 of 4…") — the
-     Supabase JS client doesn't expose byte-level progress, so we show an
-     honest step counter rather than a fabricated percentage bar.
-   • Every error shown to Shakeel is plain-language; raw error objects only
-     go to console.error() for developer debugging.
-   • RLS (see supabase/schema.sql) is the actual security boundary — this
-     file just gives Shakeel a UI over it. The publishable key used by
-     supabase-config.js can't write anything on its own; only a signed-in
-     session can.
-   ========================================================================== */
-import { supabase } from './supabase-config.js';
+/* File-based listing editor. Drafts are never published from the browser. */
+import { readListings, validateListings, escapeHTML } from './listings-store.js';
 
-const BUCKET = 'property-photos';
 const $  = (s, c = document) => c.querySelector(s);
 const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
 
 /* ---------------------------------------------------------------------------
    Small DOM refs
 --------------------------------------------------------------------------- */
-const loginView = $('#login-view');
-const dashboardView = $('#dashboard-view');
-const logoutBtn = $('#logout-btn');
-const loginForm = $('#login-form');
-const loginError = $('#login-error');
-const loginSubmit = $('#login-submit');
-
 const propertiesLoading = $('#properties-loading');
 const tableWrap = $('#properties-table-wrap');
 const tbody = $('#properties-tbody');
@@ -69,54 +46,6 @@ function toast(message, type = 'success') {
 }
 
 /* ---------------------------------------------------------------------------
-   AUTH
---------------------------------------------------------------------------- */
-function showLoggedOut() {
-  loginView.hidden = false;
-  dashboardView.hidden = true;
-  logoutBtn.hidden = true;
-}
-function showLoggedIn() {
-  loginView.hidden = true;
-  dashboardView.hidden = false;
-  logoutBtn.hidden = false;
-  loadProperties();
-}
-
-async function checkSession() {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session) showLoggedIn(); else showLoggedOut();
-}
-
-supabase.auth.onAuthStateChange((_event, session) => {
-  if (session) showLoggedIn(); else showLoggedOut();
-});
-
-loginForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  loginError.hidden = true;
-  loginSubmit.disabled = true;
-  loginSubmit.textContent = 'Signing in…';
-  const email = $('#login-email').value.trim();
-  const password = $('#login-password').value;
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  loginSubmit.disabled = false;
-  loginSubmit.textContent = 'Sign In';
-  if (error) {
-    console.error('[admin login]', error);
-    loginError.textContent = 'Incorrect email or password. Please try again.';
-    loginError.hidden = false;
-    return;
-  }
-  loginForm.reset();
-});
-
-logoutBtn.addEventListener('click', async () => {
-  await supabase.auth.signOut();
-  toast('Signed out.', 'success');
-});
-
-/* ---------------------------------------------------------------------------
    LOAD + RENDER PROPERTIES TABLE
 --------------------------------------------------------------------------- */
 const fmtPrice = (n) => typeof n === 'number' ? n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }) : n;
@@ -128,14 +57,17 @@ async function loadProperties() {
   propertiesLoading.hidden = false;
   tableWrap.hidden = true;
   emptyState.hidden = true;
-  const { data, error } = await supabase.from('properties').select('*').order('created_at', { ascending: false });
-  propertiesLoading.hidden = true;
-  if (error) {
-    console.error('[load properties]', error);
-    toast('Couldn’t load your listings. Please refresh the page.', 'error');
+  try {
+    propertiesCache = await readListings();
+    $('#export-listings').disabled = false;
+    addBtn.disabled = false;
+    $('#draft-status').textContent = 'Published listings loaded. Edits remain in this tab until downloaded.';
+  } catch (error) {
+    propertiesLoading.hidden = true;
+    $('#draft-status').textContent = 'Could not load published listings. Refresh or import a backup JSON file before editing.';
     return;
   }
-  propertiesCache = data || [];
+  propertiesLoading.hidden = true;
   renderTable();
 }
 
@@ -147,7 +79,7 @@ function renderTable() {
   }
   emptyState.hidden = true;
   tableWrap.hidden = false;
-  tbody.innerHTML = propertiesCache.map((row) => `
+  tbody.innerHTML = propertiesCache.map((raw) => { const row = Object.fromEntries(Object.entries(raw).map(([key,value]) => [key, typeof value === "string" ? escapeHTML(value) : value])); return `
     <tr>
       <td><img class="admin-table__thumb" src="${row.image || ''}" alt="" loading="lazy"></td>
       <td>
@@ -163,7 +95,7 @@ function renderTable() {
           <button class="btn btn--outline btn--sm" type="button" data-delete="${row.id}">Delete</button>
         </div>
       </td>
-    </tr>`).join('');
+    </tr>`; }).join('');
 }
 
 tbody.addEventListener('click', (e) => {
@@ -178,7 +110,7 @@ tbody.addEventListener('click', (e) => {
 --------------------------------------------------------------------------- */
 let editingId = null;
 let features = [];
-let photos = []; // [{ url, isNew, file }] — isNew ones are uploaded on save
+let photos = []; // [{ url, isNew, file }] — isNew ones are compressed on save
 
 function openModal(row) {
   form.reset();
@@ -231,7 +163,7 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modalBa
 --------------------------------------------------------------------------- */
 function renderChips() {
   featureChips.innerHTML = features.map((f, i) => `
-    <span class="chip">${f}<button type="button" data-remove-chip="${i}" aria-label="Remove ${f}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></span>`).join('');
+    <span class="chip">${escapeHTML(f)}<button type="button" data-remove-chip="${i}" aria-label="Remove ${escapeHTML(f)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></span>`).join('');
 }
 function addFeature() {
   const v = featureInput.value.trim();
@@ -282,33 +214,21 @@ fileInput.addEventListener('change', () => { addFiles(fileInput.files); fileInpu
 ['dragleave', 'drop'].forEach((evt) => dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove('is-dragover'); }));
 dropzone.addEventListener('drop', (e) => addFiles(e.dataTransfer.files));
 
-/* Uploads any pending (isNew) photos, in order, showing step progress on
-   the thumbnail itself. Returns the final ordered array of public URLs. */
-async function uploadPendingPhotos(propertySlug) {
-  const total = photos.filter((p) => p.isNew).length;
-  let done = 0;
-  const finalUrls = [];
-  for (let i = 0; i < photos.length; i++) {
-    const p = photos[i];
-    if (!p.isNew) { finalUrls.push(p.url); continue; }
-    done++;
-    const thumbEl = photoGrid.children[i];
-    const overlay = document.createElement('div');
-    overlay.className = 'photo-thumb__progress';
-    overlay.textContent = `Uploading ${done} of ${total}…`;
-    thumbEl?.appendChild(overlay);
-
-    const ext = (p.file.name.split('.').pop() || 'jpg').toLowerCase();
-    const path = `${propertySlug}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-    const { error: upErr } = await supabase.storage.from(BUCKET).upload(path, p.file, { cacheControl: '3600', upsert: false });
-    if (upErr) {
-      console.error('[photo upload]', upErr);
-      throw new Error('One of the photos failed to upload.');
-    }
-    const { data: pub } = supabase.storage.from(BUCKET).getPublicUrl(path);
-    finalUrls.push(pub.publicUrl);
+/* Resize new photos and embed JPEG data in the exported JSON. */
+async function uploadPendingPhotos() {
+  const urls = [];
+  for (const photo of photos) {
+    if (!photo.isNew) { urls.push(photo.url); continue; }
+    const bitmap = await createImageBitmap(photo.file);
+    const scale = Math.min(1, 1400 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    urls.push(canvas.toDataURL('image/jpeg', 0.78));
   }
-  return finalUrls;
+  return urls;
 }
 
 /* ---------------------------------------------------------------------------
@@ -380,26 +300,25 @@ form.addEventListener('submit', async (e) => {
       images,
     };
 
-    const { error } = editingId
-      ? await supabase.from('properties').update(payload).eq('id', editingId)
-      : await supabase.from('properties').insert(payload);
-
-    if (error) throw error;
-
-    toast(editingId ? 'Property updated.' : 'Property added.', 'success');
+    validateListings([payload]);
+    const index = propertiesCache.findIndex((row) => row.id === id);
+    if (index >= 0) propertiesCache[index] = payload;
+    else propertiesCache.unshift(payload);
+    markDirty();
+    toast('Draft saved. Download and upload the JSON file to publish.', 'success');
     closeModal();
-    loadProperties();
+    renderTable();
   } catch (err) {
     console.error('[save property]', err);
-    toast('Something went wrong saving this property. Please check your connection and try again.', 'error');
+    toast('Something went wrong saving this property. Please check the fields and photos, then try again.', 'error');
   } finally {
     submitBtn.disabled = false;
-    submitBtn.textContent = 'Save Property';
+    submitBtn.textContent = 'Save Draft';
   }
 });
 
 /* ---------------------------------------------------------------------------
-   DELETE — confirm, remove storage files, remove row
+   DELETE — remove a draft row
 --------------------------------------------------------------------------- */
 async function deleteProperty(id) {
   const row = propertiesCache.find((r) => r.id === id);
@@ -407,28 +326,44 @@ async function deleteProperty(id) {
   const ok = confirm(`Delete "${row.address}"? This cannot be undone.`);
   if (!ok) return;
 
-  try {
-    // Best-effort: remove this property's photo files from storage first.
-    const { data: files } = await supabase.storage.from(BUCKET).list(id);
-    if (files && files.length) {
-      await supabase.storage.from(BUCKET).remove(files.map((f) => `${id}/${f.name}`));
-    }
-  } catch (err) {
-    console.error('[delete storage files]', err);
-    /* Non-fatal — still proceed to delete the row so it isn't stuck. */
-  }
-
-  const { error } = await supabase.from('properties').delete().eq('id', id);
-  if (error) {
-    console.error('[delete property]', error);
-    toast('Couldn’t delete this property. Please try again.', 'error');
-    return;
-  }
-  toast('Property deleted.', 'success');
-  loadProperties();
+  propertiesCache = propertiesCache.filter((item) => item.id !== id);
+  markDirty();
+  renderTable();
+  toast('Removed from draft. Download and upload to publish.');
 }
 
-/* ---------------------------------------------------------------------------
-   INIT
---------------------------------------------------------------------------- */
-checkSession();
+let dirty = false;
+function markDirty() {
+  dirty = true;
+  $('#draft-status').textContent = 'Unexported changes. Download properties.json, then upload it to your hosting to publish.';
+}
+window.addEventListener('beforeunload', (event) => {
+  if (dirty) { event.preventDefault(); event.returnValue = ''; }
+});
+$('#export-listings').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(validateListings(propertiesCache), null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'properties.json';
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+  dirty = false;
+  $('#draft-status').textContent = 'Download requested. Upload properties.json to assets/data/ on your hosting to publish.';
+});
+$('#import-listings').addEventListener('change', async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (dirty && !confirm('Replace unexported drafts with this file?')) { event.target.value = ''; return; }
+  try {
+    const imported = validateListings(JSON.parse(await file.text()));
+    propertiesCache = imported;
+    propertiesLoading.hidden = true;
+    $('#export-listings').disabled = false;
+    addBtn.disabled = false;
+    markDirty();
+    renderTable();
+  } catch (error) { toast('Invalid listings file. Existing drafts were kept.', 'error'); }
+  event.target.value = '';
+});
+loadProperties();

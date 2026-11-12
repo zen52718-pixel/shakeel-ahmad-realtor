@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex, nofollow">
 
   <title>Admin · Shakeel Ahmad Realtor</title>
-  <meta name="description" content="Private listings dashboard.">
+  <meta name="description" content="File-based listings editor.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,44 +26,27 @@
       </a>
       <div class="admin-header__actions">
         <a class="btn btn--outline btn--sm" href="index.html" target="_blank" rel="noopener">View Site</a>
-        <button class="btn btn--outline btn--sm" id="logout-btn" type="button" hidden>Log Out</button>
       </div>
     </div>
   </header>
 
   <main id="main" class="admin-main">
-    <!-- ============================= LOGIN =============================
-         Shown by default. The dashboard is only revealed after a successful
-         Supabase Auth session is confirmed — see assets/js/admin.js. There
-         is no sign-up form anywhere on this page or site. -->
-    <section class="admin-login" id="login-view">
-      <div class="card card-pad admin-login__card">
-        <h1>Sign In</h1>
-        <p class="text-soft" style="margin-bottom:1.4rem">Log in to manage your property listings.</p>
-        <form class="form" id="login-form" novalidate>
-          <div class="field-group">
-            <label for="login-email">Email</label>
-            <input id="login-email" name="email" type="email" required autocomplete="username" placeholder="you@email.com">
-          </div>
-          <div class="field-group">
-            <label for="login-password">Password</label>
-            <input id="login-password" name="password" type="password" required autocomplete="current-password" placeholder="••••••••">
-          </div>
-          <p class="admin-hint admin-hint--error" id="login-error" hidden></p>
-          <button class="btn btn--primary btn--block" type="submit" id="login-submit">Sign In</button>
-        </form>
+    <section class="container" id="dashboard-view">
+      <div class="card card-pad" style="margin-bottom:1.5rem">
+        <h2>File-based listing editor</h2>
+        <p>Add or edit listings below, then download properties.json and replace assets/data/properties.json in Hostinger File Manager. Changes here are drafts only until you upload the file. Photos are included in the download.</p>
+        <p>This editor does not publish to the website or require a login. Only someone with hosting access can publish changes. Download your work before closing this tab.</p>
+        <button class="btn btn--primary" id="export-listings" type="button" disabled>Download properties.json</button>
+        <label class="btn btn--outline" for="import-listings">Import properties.json</label>
+        <input type="file" id="import-listings" accept=".json,application/json" hidden>
+        <p id="draft-status" role="status">Loading published listings…</p>
       </div>
-    </section>
-
-    <!-- =========================== DASHBOARD =============================
-         Hidden until authenticated (toggled in admin.js). -->
-    <section class="container" id="dashboard-view" hidden>
       <div class="admin-toolbar">
         <div>
           <p class="eyebrow">Dashboard</p>
           <h1 style="margin-bottom:0">Your Listings</h1>
         </div>
-        <button class="btn btn--gold" id="add-property-btn" type="button">+ Add New Property</button>
+        <button class="btn btn--gold" id="add-property-btn" type="button" disabled>+ Add New Property</button>
       </div>
 
       <p class="text-soft" id="properties-loading">Loading your listings…</p>
@@ -206,7 +189,7 @@
 
           <div style="display:flex; gap:.8rem; margin-top:1.6rem">
             <button class="btn btn--outline" type="button" id="property-form-cancel">Cancel</button>
-            <button class="btn btn--gold" type="submit" id="property-form-submit">Save Property</button>
+            <button class="btn btn--gold" type="submit" id="property-form-submit">Save Draft</button>
           </div>
         </form>
       </div>

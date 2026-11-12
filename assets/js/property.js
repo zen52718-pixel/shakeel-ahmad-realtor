@@ -6,11 +6,7 @@
    Reuses propertyCardHTML from main.js and mountConsultationForm() — the
    same single form template/handler used on every other page.
 
-   Data now comes from Supabase (not window.PROPERTIES — that array no
-   longer exists). This file fetches the one row matching ?id=, shows a
-   loading state while that's in flight, and uses the shared fetchProperties()
-   cache (also from main.js) for the "related listings" query so it doesn't
-   re-fetch data main.js may have already loaded.
+   Reads the shared static JSON listings cache and selects ?id=slug.
    ========================================================================== */
 
 (async function () {
@@ -27,7 +23,7 @@
 
   const id = new URLSearchParams(location.search).get('id');
 
-  /* Loading state while Supabase responds ----------------------------------*/
+  /* Loading state while the listing file loads ----------------------------------*/
   root.innerHTML = `
     <section class="section" style="padding-top:calc(var(--header-h) + 3rem)">
       <div class="container narrow center">
@@ -42,10 +38,8 @@
 
   let row, fetchFailed = false;
   try {
-    const { supabase } = await import('./supabase-config.js');
-    const { data, error } = await supabase.from('properties').select('*').eq('id', id).maybeSingle();
-    if (error) throw error;
-    row = data;
+    row = (await window.fetchProperties()).find((property) => property.id === id);
+
   } catch (err) {
     console.error('[property detail]', err);
     fetchFailed = true;
@@ -72,7 +66,7 @@
     return;
   }
 
-  const p = window.mapPropertyRow(row);
+  const p = row;
 
   function showNotFound() {
     document.title = 'Property not found · Shakeel Ahmad Realtor';
